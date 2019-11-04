@@ -139,3 +139,39 @@ CREATE TABLE
     --	Quantity of this security held before the modifying trade.
     HH_AFTER_QTY INT64 NOT NULL --	Quantity of this security held after the modifying trade.
     );
+
+-- Schema of Trade table -> Refer Page 34 2.2.2.17.1
+
+CREATE TABLE
+  staging.trade (CDC_FLAG STRING NOT NULL,
+    -- ‘I’,‘U’Denotes insert, update
+    CDC_DSN INT64 NOT NULL,
+    -- Database Sequence Number
+    T_ID INT64 NOT NULL,
+    -- Trade identifier.
+    T_DTS DATETIME NOT NULL,
+    -- Date and time of trade.
+    T_ST_ID STRING NOT NULL,
+    -- Status type identifier
+    T_TT_ID STRING NOT NULL,
+    -- Trade type identifier
+    T_IS_CASH BOOLEAN,
+    -- ‘0’ or ’1’ Is thistrade a cash (‘1’) or margin (‘0’)trade?
+    T_S_SYMB STRING NOT NULL,
+    -- Security symbol of the security
+    T_QTY INT64,
+    -- >0Quantity of securities traded
+    T_BID_PRICE NUMERIC,
+    --> 0The requested unit price.
+    T_CA_ID INT64 NOT NULL,
+    -- Customer account identifier.
+    T_EXEC_NAME STRING NOT NULL,
+    -- Name of the person executing the trade.
+    T_TRADE_PRICE NUMERIC,
+    -- null except in CMPT records, then > 0Unit price at which the security wastraded.
+    T_CHRG NUMERIC,
+    -- Null except in CMPT records, then >= 0Fee charged forplacing this traderequest.
+    T_COMM NUMERIC,
+    -- Null except in CMPT records, then >= 0Commission earned on this trade
+    T_TAX NUMERIC -- Null except in CMPT records, then >= 0Amount of tax due on this trade
+    );
