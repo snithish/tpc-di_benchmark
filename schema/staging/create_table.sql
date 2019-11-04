@@ -123,3 +123,19 @@ CREATE TABLE
     --	Lowest price for the security on this day.
     DM_VOL INT64 NOT NULL --	Volume of the security on this day.
     );
+
+-- Schema of HoldingHistory table -> Refer Page 31 2.2.2.9.1
+
+CREATE TABLE
+  staging.holding_history (CDC_FLAG STRING NOT NULL,
+    -- ‘I’	Denotes insert
+    CDC_DSN INT64 NOT NULL,
+    --	Database Sequence Number
+    HH_H_T_ID INT64 NOT NULL,
+    --	Trade Identifier of the trade that originally created the holding row.
+    HH_T_ID INT64 NOT NULL,
+    --	Trade Identifier of the current trade
+    HH_BEFORE_QTY INT64 NOT NULL,
+    --	Quantity of this security held before the modifying trade.
+    HH_AFTER_QTY INT64 NOT NULL --	Quantity of this security held after the modifying trade.
+    );
