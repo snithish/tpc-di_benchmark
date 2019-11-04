@@ -175,3 +175,19 @@ CREATE TABLE
     -- Null except in CMPT records, then >= 0Commission earned on this trade
     T_TAX NUMERIC -- Null except in CMPT records, then >= 0Amount of tax due on this trade
     );
+
+-- Schema of WatchHistory table -> Refer Page 35 2.2.2.19.1
+
+CREATE TABLE
+  staging.watch_history (CDC_FLAG STRING NOT NULL,
+    --	‘I’	Rows are only added
+    CDC_DSN INT64 NOT NULL,
+    --	Database Sequence Number
+    W_C_ID INT64 NOT NULL,
+    --	Customer identifier
+    W_S_SYMB STRING NOT NULL,
+    --	Symbol of the security to watch
+    W_DTS DATETIME NOT NULL,
+    --	Date and Time Stamp for the action
+    W_ACTION STRING --	‘ACTV’ or	Whether activating or canceling the watch ‘CNCL’
+    );
