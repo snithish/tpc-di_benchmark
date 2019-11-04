@@ -103,3 +103,23 @@ CREATE TABLE
     --	Customer's local tax rate
     C_NAT_TX_ID STRING NOT NULL --	Customer's national tax rate
     );
+
+-- Schema of DailyMarket table -> Refer Page 28 2.2.2.6.1
+
+CREATE TABLE
+  staging.daily_market (CDC_FLAG STRING NOT NULL,
+    --	‘I’	Denotes insert
+    CDC_DSN INT64 NOT NULL,
+    --	Database Sequence Number
+    DM_DATE DATE NOT NULL,
+    --	Date of last completed trading day.
+    DM_S_SYMB STRING NOT NULL,
+    --	Security symbol of the security
+    DM_CLOSE NUMERIC NOT NULL,
+    --	Closing price of the security on this day.
+    DM_HIGH NUMERIC NOT NULL,
+    --	Highest price for the secuirity on this day.
+    DM_LOW NUMERIC NOT NULL,
+    --	Lowest price for the security on this day.
+    DM_VOL INT64 NOT NULL --	Volume of the security on this day.
+    );
