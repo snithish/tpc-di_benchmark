@@ -33,3 +33,73 @@ CREATE TABLE
     --	Amount of the cash transaction.
     CT_NAME STRING NOT NULL --	Transaction name, or description: e.g. “Cash from sale of DuPont stock”.
     );
+
+-- Schema of Customer table -> Refer Page 22 2.2.2.4.1
+
+CREATE TABLE
+  staging.customer ( CDC_FLAG STRING NOT NULL,
+    --	‘I’ or ‘U’	Denotes insert or update
+    CDC_DSN INT64 NOT NULL,
+    --	Database Sequence Number
+    C_ID INT64 NOT NULL,
+    --	Customer identifier
+    C_TAX_ID STRING NOT NULL,
+    --	Customer’s tax identifier
+    C_ST_ID STRING,
+    --	‘ACTV’ or	Customer status type identifier ‘INAC’
+    C_L_NAME STRING NOT NULL,
+    --	Primary Customer's last name.
+    C_F_NAME STRING NOT NULL,
+    --	Primary Customer's first name.
+    C_M_NAME STRING,
+    --	Primary Customer's middle initial
+    C_GNDR STRING,
+    --	Gender of the primary customer
+    C_TIER INT64,
+    -- Customer tier
+    C_DOB DATE NOT NULL,
+    --	Customer’s date of birth, as YYYY-MM-DD.
+    C_ADLINE1 STRING NOT NULL,
+    --	Address Line 1
+    C_ADLINE2 STRING,
+    --	Address Line 2
+    C_ZIPCODE STRING NOT NULL,
+    --	Zip or postal code
+    C_CITY STRING NOT NULL,
+    --	City
+    C_STATE_PRO STRING NOT NULL,
+    --	State or province V
+    C_CTRY STRING,
+    --	Country
+    C_CTRY_1 STRING,
+    --	Country code for Customer's phone 1.
+    C_AREA_1 STRING,
+    --	Area code for customer’s phone 1.
+    C_LOCAL_1 STRING,
+    --	Local number for customer’s phone 1.
+    C_EXT_1 STRING,
+    --	Extension number for Customer’s phone 1.
+    C_CTRY_2 STRING,
+    --	Country code for Customer's phone 2.
+    C_AREA_2 STRING,
+    --	Area code for Customer’s phone 2.
+    C_LOCAL_2 STRING,
+    --	Local number for Customer’s phone 2.
+    C_EXT_2 STRING,
+    --	Extension number for Customer’s phone 2.
+    C_CTRY_3 STRING,
+    --	Country code for Customer's phone 3.
+    C_AREA_3 STRING,
+    --	Area code for Customer’s phone 3.
+    C_LOCAL_3 STRING,
+    --	Local number for Customer’s phone 3.
+    C_EXT_3 STRING,
+    --	Extension number for Customer’s phone 3.
+    C_EMAIL_1 STRING,
+    --	Customer's e-mail address 1.
+    C_EMAIL_2 STRING,
+    --	Customer's e-mail address 2.
+    C_LCL_TX_ID STRING NOT NULL,
+    --	Customer's local tax rate
+    C_NAT_TX_ID STRING NOT NULL --	Customer's national tax rate
+    );
