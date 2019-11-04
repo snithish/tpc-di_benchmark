@@ -17,3 +17,19 @@ CREATE TABLE
     -- 0, 1 or 2 Tax status of this account
     CA_ST_ID STRING NOT NULL-- ‘ACTV’ or ‘INAC’ Customer status type identifier
     );
+
+-- Schema of CashTransaction table -> Refer Page 22 2.2.2.3.1
+
+CREATE TABLE
+  staging.cash_transaction ( CDC_FLAG STRING NOT NULL,
+    -- L ‘I’	Denotes insert
+    CDC_DSN INT64 NOT NULL,
+    --	Database Sequence Number
+    CT_CA_ID INT64 NOT NULL,
+    --	Customer account identifier
+    CT_DTS DATETIME NOT NULL,
+    --	Timestamp of when the trade took place
+    CT_AMT FLOAT64 NOT NULL,
+    --	Amount of the cash transaction.
+    CT_NAME STRING NOT NULL --	Transaction name, or description: e.g. “Cash from sale of DuPont stock”.
+    );
