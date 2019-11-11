@@ -358,3 +358,149 @@ CREATE TABLE
     -- Flag indicating a sale
     TT_IS_MRKT INT64 NOT NULL -- Flag indicating a market order
     );
+    
+  ---- Schema of FINWIRE_CMP -> Refer Page 30 2.2.2.8
+  CREATE TABLE
+	staging.cmp_records(
+		-- Posting date & time as YYYYMMDD-HHMMSS
+		PTS STRING NOT NULL,
+
+		-- "CMP" Type
+		RECTYPE STRING NOT NULL,
+
+		-- Name of the COMPANY
+		COMPANYNAME STRING NOT NULL,
+
+		-- Company identification code from SEC 
+		CIK STRING NOT NULL,
+
+		-- ‘ACTV’ for Active company, ‘INAC’ for inactive
+		STATUS STRING NOT NULL,
+
+		-- Code for industry segment
+		INDUSTRYID STRING NOT NULL,
+
+		-- S&P rating
+		SPRATING STRING NOT NULL,
+
+		-- FOUNDINGDATE as YYYYMMDD
+		FOUNDINGDATE STRING, 
+
+		-- Mailing address Line 1
+		ADDRLINE1 STRING NOT NULL,
+
+		-- Mailing address Line 2
+		ADDRLINE2 STRING,
+
+		-- Mailing address PostalCode
+		POSTALCODE STRING NOT NULL,
+
+		-- Mailing address CITY 
+
+		CITY STRING NOT NULL,
+
+		-- Mailing address STATEPROVINCE
+		STATEPROVINCE STRING NOT NULL,
+
+		-- Mailing address COUNTRY
+		COUNTRY STRING, 
+
+		-- Name of company CEO
+		CEONAME STRING NOT NULL,
+
+		-- Description of the company
+		DESCRIPTION STRING NOT NULL
+	);
+---- Schema of FINWIRE_SEC -> Refer Page 30 2.2.2.8
+CREATE TABLE 
+	staging.sec_records(
+		-- Posting date & time as YYYYMMDD-HHMMSS
+		PTS STRING NOT NULL,
+
+		-- "SEC” Type
+		RECTYPE STRING NOT NULL,
+
+		-- Security symbol
+		SYMBOL STRING NOT NULL,
+
+		-- Issue type
+		ISSUETYPE STRING NOT NULL,
+
+		-- ‘ACTV’ for Active security, ‘INAC’ for inactive
+		STATUS STRING NOT NULL,
+
+		-- Security name
+		NAME STRING NOT NULL,
+
+		-- ID of the exchange the security is traded on
+		EXID STRING NOT NULL,
+
+		-- Number of shares outstanding
+		SHOUT STRING NOT NULL,
+
+		-- Date of first trade as YYYYMMDD
+		FIRSTTRADEDATE STRING NOT NULL,
+
+		-- Date of first trade on exchange as YYYYMMDD
+		FIRSTTRADEEXCHG STRING NOT NULL,
+
+		-- Dividend as VALUE_T
+		DIVIDEND STRING NOT NULL,
+
+		-- Company CIK number (if only digits, 10 chars) or name (if not only digits, 60 chars)
+		CONAMEORCIK STRING NOT NULL
+	);
+---- Schema of FINWIRE_FIN -> Refer Page 31 2.2.2.8
+CREATE TABLE 
+	staging.fin_records(
+		-- Posting date & time as YYYYMMDD-HHMMSS
+		PTS STRING NOT NULL,
+
+		-- "SEC” Type
+		RECTYPE STRING NOT NULL,
+
+		-- Year of the quarter end.
+		YEAR STRING NOT NULL,
+
+		-- QUARTER number: valid values are ‘1’, ‘2’, ‘3’, ‘4’
+		QUARTER STRING NOT NULL,
+
+		-- Start date of quarter, as YYYYMMDD
+		QTRSTARTDATE STRING NOT NULL,
+
+		-- Posting date of quarterly report as YYYYMMDD
+		POSTINGDATE STRING NOT NULL,
+
+		-- Reported revenue for the quarter
+		REVENUE STRING NOT NULL,
+
+		-- Net earnings reported for the quarter
+		EARNINGS STRING NOT NULL,
+
+		-- Basic earnings per share for the quarter
+		EPS STRING NOT NULL,
+
+		-- Diluted earnings per share for the quarter
+		DILUTEDEPS STRING NOT NULL,
+
+		-- Profit divided by revenues for the quarter
+		MARGIN STRING NOT NULL,
+
+		-- Value of inventory on hand at end of quarter
+		INVENTORY STRING NOT NULL,
+
+		-- Value of total assets at the end of quarter
+		ASSETS STRING NOT NULL,
+
+		-- Value of total liabilities at the end of quarter
+		LIABILITIES STRING NOT NULL,
+
+		-- Average number of shares outstanding
+		SHOUT STRING NOT NULL,
+
+		-- Average number of shares outstanding (diluted)
+		DILUTEDSHOUT STRING NOT NULL,
+
+		-- Company CIK number (if only digits, 10 chars) or name (if not only digits, 60 chars)
+		CONAMEORCIK STRING NOT NULL
+	);
