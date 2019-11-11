@@ -196,25 +196,25 @@ CREATE TABLE
 CREATE TABLE
   staging.date ( SK_DateID INT64 NOT NULL,
     -- Surrogate key for the date
-    DateValue INT64 NOT NULL,
+    DateValue DATE NOT NULL,
     --  The date as text, e.g. “2004-07-07”
-    DateDesc INT64 NOT NULL,
+    DateDesc STRING NOT NULL,
     --The date Month Day, YYYY, e.g. July 7, 2004
     CalendarYearID INT64 NOT NULL,
     -- Year number as a number
-    CalendarYearDesc INT64 NOT NULL,
+    CalendarYearDesc STRING NOT NULL,
     -- Year number as text
     CalendarQtrID INT64 NOT NULL,
     -- Quarter as a number, e.g. 20042
-    CalendarQtrDesc INT64 NOT NULL,
+    CalendarQtrDesc STRING NOT NULL,
     -- Quarter as text, e.g. “2004 Q2”
     CalendarMonthID INT64 NOT NULL,
     -- Month as a number, e.g. 20047
-    CalendarMonthDesc INT64 NOT NULL,
+    CalendarMonthDesc STRING NOT NULL,
     -- Month as text, e.g. “2004 July”
     CalendarWeekID INT64 NOT NULL,
     -- Week as a number, e.g. 200428
-    CalendarWeekDesc INT64 NOT NULL,
+    CalendarWeekDesc STRING NOT NULL,
     -- Week as text, e.g. “2004-W28”
     DayOfWeekNum INT64 NOT NULL,
     -- Day of week as a number, e.g. 3
@@ -222,11 +222,11 @@ CREATE TABLE
     -- Day of week as text, e.g. “Wednesday”
     FiscalYearID INT64 NOT NULL,
     -- Fiscal year as a number, e.g. 2005
-    FiscalYearDesc INT64 NOT NULL,
+    FiscalYearDesc STRING NOT NULL,
     -- Fiscal year as text, e.g. “2005”
     FiscalQtrID INT64 NOT NULL,
     -- Fiscal quarter as a number, e.g. 20051
-    FiscalQtrDesc INT64 NOT NULL,
+    FiscalQtrDesc STRING NOT NULL,
     -- Fiscal quarter as text, e.g. “2005 Q1”
     HolidayFlag BOOLEAN -- Indicates holidays
     );
