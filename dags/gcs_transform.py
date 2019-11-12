@@ -4,7 +4,7 @@ from airflow import models
 from airflow.contrib.operators.gcs_download_operator import GoogleCloudStorageDownloadOperator
 from airflow.operators.python_operator import PythonOperator
 
-from .transformations import transform_account
+from transformations import transform_account
 
 default_args = {
     'owner': 'airflow',
