@@ -127,3 +127,11 @@ CREATE TABLE
     ST_NAME STRING NOT NULL -- Status description
     );
 
+  ---- Schema of TaxRate table -> Refer Page 45 3.2.20
+CREATE TABLE
+  master.tax_rate ( TX_ID STRING NOT NULL,
+    -- Tax rate code
+    TX_NAME STRING NOT NULL,
+    -- Tax rate description
+    TX_RATE NUMERIC NOT NULL -- Tax rate
+    );

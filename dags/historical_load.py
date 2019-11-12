@@ -81,3 +81,12 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                         "mode": "REQUIRED"},
                                                                        {"name": "ST_NAME", "type": "STRING",
                                                                         "mode": "REQUIRED"}], 'master.status_type')
+
+    load_tax_rate_file_to_master = construct_gcs_to_bq_operator('load_tax_rate_to_master',
+                                                                ['Batch1/TaxRate.txt'], [
+                                                                    {"name": "TX_ID", "type": "STRING",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "TX_NAME", "type": "STRING",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "TX_RATE", "type": "NUMERIC",
+                                                                     "mode": "REQUIRED"}], 'master.tax_rate')
