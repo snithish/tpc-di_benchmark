@@ -1,14 +1,10 @@
 from datetime import datetime
-from typing import List, Dict
 
 from airflow import DAG
-from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
-GOOGLE_CLOUD_DEFAULT = 'google_cloud_default'
+from utils import construct_gcs_to_bq_operator
 
-BIG_QUERY_CONN_ID = 'bigquery_default'
-
-GCS_BUCKET = 'tpc-di_data'
+AIRFLOW = 'airflow'
 
 default_args = {
     'owner': 'airflow',
@@ -18,24 +14,6 @@ default_args = {
     'email_on_retry': False,
     'retries': 0
 }
-
-
-def construct_gcs_to_bq_operator(task_id: str, source_objects: List[str], schema_fields: List[Dict],
-                                 destination_project_dataset_table: str) -> GoogleCloudStorageToBigQueryOperator:
-    return GoogleCloudStorageToBigQueryOperator(
-        task_id=task_id,
-        bucket=GCS_BUCKET,
-        source_objects=source_objects,
-        schema_fields=schema_fields,
-        field_delimiter='|',
-        destination_project_dataset_table=destination_project_dataset_table,
-        write_disposition='WRITE_TRUNCATE',
-        autodetect=False,
-        bigquery_conn_id=BIG_QUERY_CONN_ID,
-        google_cloud_storage_conn_id=GOOGLE_CLOUD_DEFAULT,
-        ignore_unknown_values=False
-    )
-
 
 with DAG('historical_load', schedule_interval=None, default_args=default_args) as dag:
     load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_master', ['Batch1/Date.txt'], [
