@@ -2,7 +2,7 @@ from datetime import datetime
 
 from airflow import DAG
 
-from utils import construct_gcs_to_bq_operator
+from utils import construct_gcs_to_bq_operator, get_file_path
 
 AIRFLOW = 'airflow'
 
@@ -16,7 +16,7 @@ default_args = {
 }
 
 with DAG('historical_load', schedule_interval=None, default_args=default_args) as dag:
-    load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_master', ['Batch1/Date.txt'], [
+    load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_master', get_file_path(False, 'Date'), [
         {"name": "SK_DateID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "DateValue", "type": "DATE", "mode": "REQUIRED"},
         {"name": "DateDesc", "type": "STRING", "mode": "REQUIRED"},
@@ -36,7 +36,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "FiscalQtrDesc", "type": "STRING", "mode": "REQUIRED"},
         {"name": "HolidayFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.date')
 
-    load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_master', ['Batch1/Time.txt'], [
+    load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_master', get_file_path(False, 'Time'), [
         {"name": "INT64imeID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "TimeValue", "type": "STRING", "mode": "REQUIRED"},
         {"name": "HourID", "type": "INT64", "mode": "REQUIRED"},
@@ -48,20 +48,21 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "MarketHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"},
         {"name": "OfficeHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.time')
 
-    load_industry_file_to_master = construct_gcs_to_bq_operator('load_industry_to_master', ['Batch1/Industry.txt'], [
+    load_industry_file_to_master = construct_gcs_to_bq_operator('load_industry_to_master',
+                                                                get_file_path(False, 'Industry'), [
         {"name": "IN_ID", "type": "STRING", "mode": "REQUIRED"},
         {"name": "IN_NAME", "type": "STRING", "mode": "REQUIRED"},
         {"name": "IN_SC_ID", "type": "STRING", "mode": "REQUIRED"}], 'master.industry')
 
     load_status_type_file_to_master = construct_gcs_to_bq_operator('load_status_type_to_master',
-                                                                   ['Batch1/StatusType.txt'], [
+                                                                   get_file_path(False, 'StatusType'), [
                                                                        {"name": "ST_ID", "type": "STRING",
                                                                         "mode": "REQUIRED"},
                                                                        {"name": "ST_NAME", "type": "STRING",
                                                                         "mode": "REQUIRED"}], 'master.status_type')
 
     load_tax_rate_file_to_master = construct_gcs_to_bq_operator('load_tax_rate_to_master',
-                                                                ['Batch1/TaxRate.txt'], [
+                                                                get_file_path(False, 'TaxRate'), [
                                                                     {"name": "TX_ID", "type": "STRING",
                                                                      "mode": "REQUIRED"},
                                                                     {"name": "TX_NAME", "type": "STRING",
@@ -70,7 +71,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                      "mode": "REQUIRED"}], 'master.tax_rate')
 
     load_trade_type_file_to_master = construct_gcs_to_bq_operator('load_trade_type_to_master',
-                                                                  ['Batch1/TradeType.txt'], [
+                                                                  get_file_path(False, 'TradeType'), [
                                                                       {"name": "TT_ID", "type": "STRING",
                                                                        "mode": "REQUIRED"},
                                                                       {"name": "TT_NAME", "type": "STRING",

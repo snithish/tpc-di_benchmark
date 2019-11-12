@@ -1,8 +1,8 @@
-from constants import *
-
 from typing import List, Dict
 
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
+
+from constants import *
 
 
 def construct_gcs_to_bq_operator(task_id: str, source_objects: List[str], schema_fields: List[Dict],
@@ -25,6 +25,6 @@ def construct_gcs_to_bq_operator(task_id: str, source_objects: List[str], schema
 def get_file_path(incremental: bool, filename: str, extension: str = 'txt') -> List[str]:
     folder_path = "incremental"
     if not incremental:
-        folder_path = "history"
+        folder_path = "historical"
 
     return ["{}/{}.{}".format(folder_path, filename, extension)]
