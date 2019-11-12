@@ -1,13 +1,10 @@
-import os
+from datetime import datetime
 
-import airflow
-
-from datetime import timedelta, datetime
 from airflow import models
 from airflow.contrib.operators.gcs_download_operator import GoogleCloudStorageDownloadOperator
 from airflow.operators.python_operator import PythonOperator
 
-from transformations import transform_account
+from .transformations import transform_account
 
 default_args = {
     'owner': 'airflow',
@@ -15,8 +12,7 @@ default_args = {
     'start_date': datetime(2019, 11, 1),
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=30),
+    'retries': 0
 }
 
 with models.DAG("gcs_transform", default_args=default_args, schedule_interval=None) as dag:
