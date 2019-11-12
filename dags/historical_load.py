@@ -38,7 +38,7 @@ def construct_gcs_to_bq_operator(task_id: str, source_objects: List[str], schema
 
 
 with DAG('historical_load', schedule_interval=None, default_args=default_args) as dag:
-    load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_staging', ['Batch1/Date.txt'], [
+    load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_master', ['Batch1/Date.txt'], [
         {"name": "SK_DateID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "DateValue", "type": "DATE", "mode": "REQUIRED"},
         {"name": "DateDesc", "type": "STRING", "mode": "REQUIRED"},
@@ -58,7 +58,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "FiscalQtrDesc", "type": "STRING", "mode": "REQUIRED"},
         {"name": "HolidayFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.date')
 
-    load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_staging', ['Batch1/Time.txt'], [
+    load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_master', ['Batch1/Time.txt'], [
         {"name": "INT64imeID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "TimeValue", "type": "STRING", "mode": "REQUIRED"},
         {"name": "HourID", "type": "INT64", "mode": "REQUIRED"},
