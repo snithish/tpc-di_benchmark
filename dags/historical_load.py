@@ -90,3 +90,14 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                      "mode": "REQUIRED"},
                                                                     {"name": "TX_RATE", "type": "NUMERIC",
                                                                      "mode": "REQUIRED"}], 'master.tax_rate')
+
+    load_trade_type_file_to_master = construct_gcs_to_bq_operator('load_trade_type_to_master',
+                                                                  ['Batch1/TradeType.txt'], [
+                                                                      {"name": "TT_ID", "type": "STRING",
+                                                                       "mode": "REQUIRED"},
+                                                                      {"name": "TT_NAME", "type": "STRING",
+                                                                       "mode": "REQUIRED"},
+                                                                      {"name": "TT_IS_SELL", "type": "INT64",
+                                                                       "mode": "REQUIRED"},
+                                                                      {"name": "TT_IS_MRKT", "type": "INT64",
+                                                                       "mode": "REQUIRED"}], 'master.trade_type')

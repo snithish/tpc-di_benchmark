@@ -135,3 +135,14 @@ CREATE TABLE
     -- Tax rate description
     TX_RATE NUMERIC NOT NULL -- Tax rate
     );
+
+  ---- Schema of TradeType table -> Refer Page 46 3.2.21
+CREATE TABLE
+  master.trade_type ( TT_ID STRING NOT NULL,
+    -- Trade type code
+    TT_NAME STRING NOT NULL,
+    -- Trade type description
+    TT_IS_SELL INT64 NOT NULL,
+    -- Flag indicating a sale
+    TT_IS_MRKT INT64 NOT NULL -- Flag indicating a market order
+    );
