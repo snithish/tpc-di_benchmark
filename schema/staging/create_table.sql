@@ -192,44 +192,6 @@ CREATE TABLE
     W_ACTION STRING --	‘ACTV’ or	Whether activating or canceling the watch ‘CNCL’
     );
 
----- Schema of date table -> Refer Page 29 2.2.2.7.1
-CREATE TABLE
-  staging.date ( SK_DateID INT64 NOT NULL,
-    -- Surrogate key for the date
-    DateValue DATE NOT NULL,
-    --  The date as text, e.g. “2004-07-07”
-    DateDesc STRING NOT NULL,
-    --The date Month Day, YYYY, e.g. July 7, 2004
-    CalendarYearID INT64 NOT NULL,
-    -- Year number as a number
-    CalendarYearDesc STRING NOT NULL,
-    -- Year number as text
-    CalendarQtrID INT64 NOT NULL,
-    -- Quarter as a number, e.g. 20042
-    CalendarQtrDesc STRING NOT NULL,
-    -- Quarter as text, e.g. “2004 Q2”
-    CalendarMonthID INT64 NOT NULL,
-    -- Month as a number, e.g. 20047
-    CalendarMonthDesc STRING NOT NULL,
-    -- Month as text, e.g. “2004 July”
-    CalendarWeekID INT64 NOT NULL,
-    -- Week as a number, e.g. 200428
-    CalendarWeekDesc STRING NOT NULL,
-    -- Week as text, e.g. “2004-W28”
-    DayOfWeekNum INT64 NOT NULL,
-    -- Day of week as a number, e.g. 3
-    DayOfWeekDesc STRING NOT NULL,
-    -- Day of week as text, e.g. “Wednesday”
-    FiscalYearID INT64 NOT NULL,
-    -- Fiscal year as a number, e.g. 2005
-    FiscalYearDesc STRING NOT NULL,
-    -- Fiscal year as text, e.g. “2005”
-    FiscalQtrID INT64 NOT NULL,
-    -- Fiscal quarter as a number, e.g. 20051
-    FiscalQtrDesc STRING NOT NULL,
-    -- Fiscal quarter as text, e.g. “2005 Q1”
-    HolidayFlag BOOLEAN -- Indicates holidays
-    );
   ---- Schema of hr table -> Refer Page 31 2.2.2.10.1
 CREATE TABLE
   staging.hr ( EmployeeID INT64 NOT NULL,
@@ -250,14 +212,7 @@ CREATE TABLE
     -- Office number or description
     EmployeePhone STRING --Employee phone number
     );
-  ---- Schema of industry table -> Refer Page 32 2.2.2.11
-CREATE TABLE
-  staging.industry ( IN_ID STRING NOT NULL,
-    -- Industry code
-    IN_NAME STRING NOT NULL,
-    -- Industry description
-    IN_SC_ID STRING NOT NULL -- Sector identifier
-    );
+
   ---- Schema of prospect table -> Refer Page 32 2.2.2.12
 CREATE TABLE
   staging.prospect ( AgencyID STRING NOT NULL,
@@ -304,42 +259,7 @@ CREATE TABLE
     -- Credit cards
     NetWorth INT64 -- Estimated total net worth
     );
-  ---- Schema of StatusType table -> Refer Page 33 2.2.2.13
-CREATE TABLE
-  staging.StatusType ( ST_ID STRING NOT NULL,
-    -- Status code
-    ST_NAME STRING NOT NULL -- Status description
-    );
-  ---- Schema of TaxRate table -> Refer Page 33 2.2.2.14
-CREATE TABLE
-  staging.TaxRate ( TX_ID STRING NOT NULL,
-    -- Tax rate code
-    TX_NAME STRING NOT NULL,
-    -- Tax rate description
-    TX_RATE NUMERIC NOT NULL -- Tax rate
-    );
-  ---- Schema of time table -> Refer Page 33 2.2.2.15.1
-CREATE TABLE
-  staging.time ( INT64imeID INT64 NOT NULL,
-    -- Surrogate key for the time
-    TimeValue STRING NOT NULL,
-    -- The time as text, e.g. “01:23:45”
-    HourID INT64 NOT NULL,
-    -- Hour number as a number, e.g. 01
-    HourDesc STRING NOT NULL,
-    -- Hour number as text, e.g. “01”
-    MinuteID INT64 NOT NULL,
-    -- Minute as a number, e.g. 23
-    MinuteDesc STRING NOT NULL,
-    -- Minute as text, e.g. “01:23”
-    SecondID INT64 NOT NULL,
-    -- Second as a number, e.g. 45
-    SecondDesc STRING NOT NULL,
-    -- Second as text, e.g. “01:23:45”
-    MarketHoursFlag BOOLEAN,
-    -- Indicates a time during market hours
-    OfficeHoursFlag BOOLEAN -- Indicates a time during office hours
-    );
+
   ---- Schema of TradeHistory table -> Refer Page 33 2.2.2.16.1
 CREATE TABLE
   staging.TradeHistory ( TH_T_ID INT64 NOT NULL,
@@ -347,16 +267,6 @@ CREATE TABLE
     TH_DTS DATETIME NOT NULL,
     -- When the trade history was updated
     TH_ST_ID STRING NOT NULL -- Status type identifier
-    );
-  ---- Schema of TradeType table -> Refer Page 34 2.2.2.18
-CREATE TABLE
-  staging.TradeType ( TT_ID STRING NOT NULL,
-    -- Trade type code
-    TT_NAME STRING NOT NULL,
-    -- Trade type description
-    TT_IS_SELL INT64 NOT NULL,
-    -- Flag indicating a sale
-    TT_IS_MRKT INT64 NOT NULL -- Flag indicating a market order
     );
     
   ---- Schema of FINWIRE_CMP -> Refer Page 30 2.2.2.8

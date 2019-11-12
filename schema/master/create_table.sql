@@ -146,3 +146,63 @@ CREATE TABLE
     -- Flag indicating a sale
     TT_IS_MRKT INT64 NOT NULL -- Flag indicating a market order
     );
+
+CREATE TABLE
+  master.date ( SK_DateID INT64 NOT NULL,
+    -- Surrogate key for the date
+    DateValue DATE NOT NULL,
+    --  The date as text, e.g. “2004-07-07”
+    DateDesc STRING NOT NULL,
+    --The date Month Day, YYYY, e.g. July 7, 2004
+    CalendarYearID INT64 NOT NULL,
+    -- Year number as a number
+    CalendarYearDesc STRING NOT NULL,
+    -- Year number as text
+    CalendarQtrID INT64 NOT NULL,
+    -- Quarter as a number, e.g. 20042
+    CalendarQtrDesc STRING NOT NULL,
+    -- Quarter as text, e.g. “2004 Q2”
+    CalendarMonthID INT64 NOT NULL,
+    -- Month as a number, e.g. 20047
+    CalendarMonthDesc STRING NOT NULL,
+    -- Month as text, e.g. “2004 July”
+    CalendarWeekID INT64 NOT NULL,
+    -- Week as a number, e.g. 200428
+    CalendarWeekDesc STRING NOT NULL,
+    -- Week as text, e.g. “2004-W28”
+    DayOfWeekNum INT64 NOT NULL,
+    -- Day of week as a number, e.g. 3
+    DayOfWeekDesc STRING NOT NULL,
+    -- Day of week as text, e.g. “Wednesday”
+    FiscalYearID INT64 NOT NULL,
+    -- Fiscal year as a number, e.g. 2005
+    FiscalYearDesc STRING NOT NULL,
+    -- Fiscal year as text, e.g. “2005”
+    FiscalQtrID INT64 NOT NULL,
+    -- Fiscal quarter as a number, e.g. 20051
+    FiscalQtrDesc STRING NOT NULL,
+    -- Fiscal quarter as text, e.g. “2005 Q1”
+    HolidayFlag BOOLEAN -- Indicates holidays
+    );
+
+CREATE TABLE
+  master.time ( INT64imeID INT64 NOT NULL,
+    -- Surrogate key for the time
+    TimeValue STRING NOT NULL,
+    -- The time as text, e.g. “01:23:45”
+    HourID INT64 NOT NULL,
+    -- Hour number as a number, e.g. 01
+    HourDesc STRING NOT NULL,
+    -- Hour number as text, e.g. “01”
+    MinuteID INT64 NOT NULL,
+    -- Minute as a number, e.g. 23
+    MinuteDesc STRING NOT NULL,
+    -- Minute as text, e.g. “01:23”
+    SecondID INT64 NOT NULL,
+    -- Second as a number, e.g. 45
+    SecondDesc STRING NOT NULL,
+    -- Second as text, e.g. “01:23:45”
+    MarketHoursFlag BOOLEAN,
+    -- Indicates a time during market hours
+    OfficeHoursFlag BOOLEAN -- Indicates a time during office hours
+    );
