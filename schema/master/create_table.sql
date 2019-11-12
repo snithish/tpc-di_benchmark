@@ -109,7 +109,7 @@ CREATE TABLE
     -- For marketing purposes
     );
 
----- Schema of TaxRate table -> Refer Page 44 3.2.16
+---- Schema of Industry table -> Refer Page 44 3.2.16
 CREATE TABLE
   master.industry ( IN_ID STRING NOT NULL,
     -- Industry code
@@ -117,3 +117,13 @@ CREATE TABLE
     -- Industry description
     IN_SC_ID STRING NOT NULL -- Sector identifier
     );
+
+
+---- Schema of StatusType table -> Refer Page 45 3.2.19
+
+CREATE TABLE
+  master.status_type ( ST_ID STRING NOT NULL,
+    -- Status code
+    ST_NAME STRING NOT NULL -- Status description
+    );
+

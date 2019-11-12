@@ -74,3 +74,10 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "IN_ID", "type": "STRING", "mode": "REQUIRED"},
         {"name": "IN_NAME", "type": "STRING", "mode": "REQUIRED"},
         {"name": "IN_SC_ID", "type": "STRING", "mode": "REQUIRED"}], 'master.industry')
+
+    load_status_type_file_to_master = construct_gcs_to_bq_operator('load_status_type_to_master',
+                                                                   ['Batch1/StatusType.txt'], [
+                                                                       {"name": "ST_ID", "type": "STRING",
+                                                                        "mode": "REQUIRED"},
+                                                                       {"name": "ST_NAME", "type": "STRING",
+                                                                        "mode": "REQUIRED"}], 'master.status_type')
