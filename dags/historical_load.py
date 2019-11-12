@@ -69,3 +69,8 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "SecondDesc", "type": "STRING", "mode": "REQUIRED"},
         {"name": "MarketHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"},
         {"name": "OfficeHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.time')
+
+    load_industry_file_to_master = construct_gcs_to_bq_operator('load_industry_to_master', ['Batch1/Industry.txt'], [
+        {"name": "IN_ID", "type": "STRING", "mode": "REQUIRED"},
+        {"name": "IN_NAME", "type": "STRING", "mode": "REQUIRED"},
+        {"name": "IN_SC_ID", "type": "STRING", "mode": "REQUIRED"}], 'master.industry')

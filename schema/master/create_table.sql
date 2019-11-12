@@ -108,3 +108,12 @@ CREATE TABLE
     MarketingNameplate STRING
     -- For marketing purposes
     );
+
+---- Schema of TaxRate table -> Refer Page 44 3.2.16
+CREATE TABLE
+  master.industry ( IN_ID STRING NOT NULL,
+    -- Industry code
+    IN_NAME STRING NOT NULL,
+    -- Industry description
+    IN_SC_ID STRING NOT NULL -- Sector identifier
+    );
