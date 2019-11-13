@@ -188,3 +188,19 @@ with DAG('incremental_load', schedule_interval=None, default_args=default_args) 
                                                                   {"name": "T_TAX", "type": "NUMERIC",
                                                                    "mode": "NULLABLE"}],
                                                               'staging.trade')
+
+    load_watch_history_file_to_staging = construct_gcs_to_bq_operator('load_watch_history_to_staging',
+                                                                      get_file_path(True, 'WatchHistory'), [
+                                                                          {"name": "CDC_FLAG", "type": "STRING",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "CDC_DSN", "type": "INTEGER",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_C_ID", "type": "INTEGER",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_S_SYMB", "type": "STRING",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_DTS", "type": "DATETIME",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_ACTION", "type": "STRING",
+                                                                           "mode": "NULLABLE"}],
+                                                                      'staging.watch_history')
