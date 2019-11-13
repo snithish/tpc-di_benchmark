@@ -116,3 +116,23 @@ with DAG('incremental_load', schedule_interval=None, default_args=default_args) 
                                                                      {"name": "C_NAT_TX_ID", "type": "STRING",
                                                                       "mode": "REQUIRED"}],
                                                                  'staging.customer')
+
+    load_daily_market_file_to_staging = construct_gcs_to_bq_operator('load_daily_market_to_staging',
+                                                                     get_file_path(True, 'DailyMarket'), [
+                                                                         {"name": "CDC_FLAG", "type": "STRING",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "CDC_DSN", "type": "INTEGER",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_DATE", "type": "DATE",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_S_SYMB", "type": "STRING",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_CLOSE", "type": "NUMERIC",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_HIGH", "type": "NUMERIC",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_LOW", "type": "NUMERIC",
+                                                                          "mode": "REQUIRED"},
+                                                                         {"name": "DM_VOL", "type": "INTEGER",
+                                                                          "mode": "REQUIRED"}],
+                                                                     'staging.daily_market')
