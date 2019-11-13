@@ -148,7 +148,7 @@ CREATE TABLE
     );
 
 CREATE TABLE
-  master.date ( SK_DateID INT64 NOT NULL,
+  master.dim_date ( SK_DateID INT64 NOT NULL,
     -- Surrogate key for the date
     DateValue DATE NOT NULL,
     --  The date as text, e.g. “2004-07-07”
@@ -186,7 +186,7 @@ CREATE TABLE
     );
 
 CREATE TABLE
-  master.time ( INT64imeID INT64 NOT NULL,
+  master.dim_time ( INT64imeID INT64 NOT NULL,
     -- Surrogate key for the time
     TimeValue STRING NOT NULL,
     -- The time as text, e.g. “01:23:45”

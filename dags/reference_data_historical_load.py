@@ -34,7 +34,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "FiscalYearDesc", "type": "STRING", "mode": "REQUIRED"},
         {"name": "FiscalQtrID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "FiscalQtrDesc", "type": "STRING", "mode": "REQUIRED"},
-        {"name": "HolidayFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.date')
+        {"name": "HolidayFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.dim_date')
 
     load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_master', get_file_path(False, 'Time'), [
         {"name": "INT64imeID", "type": "INT64", "mode": "REQUIRED"},
@@ -46,7 +46,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "SecondID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "SecondDesc", "type": "STRING", "mode": "REQUIRED"},
         {"name": "MarketHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"},
-        {"name": "OfficeHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.time')
+        {"name": "OfficeHoursFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.dim_time')
 
     load_industry_file_to_master = construct_gcs_to_bq_operator('load_industry_to_master',
                                                                 get_file_path(False, 'Industry'), [

@@ -25,7 +25,7 @@ WITH
         SELECT
             MIN(DateValue) AS EffectiveDate
         FROM
-            master.date)
+            master.dim_date)
 SELECT
     CAST(CONCAT(CAST(UNIX_SECONDS(CURRENT_TIMESTAMP()) AS STRING), '', CAST(EmployeeID AS STRING)) AS INT64) AS SK_BrokerID,
     EmployeeID,
