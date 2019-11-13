@@ -2,7 +2,8 @@ from datetime import datetime
 
 from airflow import DAG
 
-from utils import construct_gcs_to_bq_operator, get_file_path
+from constants import CSV_EXTENSION
+from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql
 
 AIRFLOW = 'airflow'
 
@@ -50,9 +51,12 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
 
     load_industry_file_to_master = construct_gcs_to_bq_operator('load_industry_to_master',
                                                                 get_file_path(False, 'Industry'), [
-        {"name": "IN_ID", "type": "STRING", "mode": "REQUIRED"},
-        {"name": "IN_NAME", "type": "STRING", "mode": "REQUIRED"},
-        {"name": "IN_SC_ID", "type": "STRING", "mode": "REQUIRED"}], 'master.industry')
+                                                                    {"name": "IN_ID", "type": "STRING",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "IN_NAME", "type": "STRING",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "IN_SC_ID", "type": "STRING",
+                                                                     "mode": "REQUIRED"}], 'master.industry')
 
     load_status_type_file_to_master = construct_gcs_to_bq_operator('load_status_type_to_master',
                                                                    get_file_path(False, 'StatusType'), [
@@ -80,3 +84,29 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                        "mode": "REQUIRED"},
                                                                       {"name": "TT_IS_MRKT", "type": "INT64",
                                                                        "mode": "REQUIRED"}], 'master.trade_type')
+
+    load_hr_file_to_staging = construct_gcs_to_bq_operator('load_hr_to_staging',
+                                                           get_file_path(False, 'HR', CSV_EXTENSION), [
+                                                               {"name": "EmployeeID", "type": "INTEGER",
+                                                                "mode": "REQUIRED"},
+                                                               {"name": "ManagerID", "type": "INTEGER",
+                                                                "mode": "REQUIRED"},
+                                                               {"name": "EmployeeFirstName", "type": "STRING",
+                                                                "mode": "REQUIRED"},
+                                                               {"name": "EmployeeLastName", "type": "STRING",
+                                                                "mode": "REQUIRED"},
+                                                               {"name": "EmployeeMI", "type": "STRING",
+                                                                "mode": "NULLABLE"},
+                                                               {"name": "EmployeeJobCode", "type": "INTEGER",
+                                                                "mode": "NULLABLE"},
+                                                               {"name": "EmployeeBranch", "type": "STRING",
+                                                                "mode": "NULLABLE"},
+                                                               {"name": "EmployeeOffice", "type": "STRING",
+                                                                "mode": "NULLABLE"},
+                                                               {"name": "EmployeePhone", "type": "STRING",
+                                                                "mode": "NULLABLE"}], 'staging.hr')
+    transform_hr_to_broker = execute_sql(task_id='transform_hr_to_broker',
+                                         sql_file_path='queries/transform_load_dim_broker.sql',
+                                         truncate_write=True)
+
+    [load_date_file_to_master, load_hr_file_to_staging] >> transform_hr_to_broker
