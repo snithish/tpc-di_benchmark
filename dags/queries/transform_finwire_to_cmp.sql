@@ -2,22 +2,7 @@
 -- Refer to Page 30 -> 2.2.8
 -- Multi record is parsed to constituent tables here we have done it for CMP, for format look at table + plus data
 -- casting done for easy loading to Dimension table later
-INSERT INTO
-    staging.cmp_records(PTS,
-                        COMPANYNAME,
-                        CIK,
-                        STATUS,
-                        INDUSTRYID,
-                        SPRATING,
-                        FOUNDINGDATE,
-                        ADDRLINE1,
-                        ADDRLINE2,
-                        POSTALCODE,
-                        CITY,
-                        STATEPROVINCE,
-                        COUNTRY,
-                        CEONAME,
-                        DESCRIPTION)
+
 SELECT
     PARSE_DATETIME('%E4Y%m%d-%H%M%S',
                    SUBSTR(ROW, 1, 15)) AS PTS,
