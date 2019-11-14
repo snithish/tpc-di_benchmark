@@ -3,7 +3,7 @@ from datetime import datetime
 from airflow import DAG
 
 from constants import CSV_EXTENSION
-from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite
 
 AIRFLOW = 'airflow'
 
@@ -105,8 +105,8 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                 "mode": "NULLABLE"},
                                                                {"name": "EmployeePhone", "type": "STRING",
                                                                 "mode": "NULLABLE"}], 'staging.hr')
-    transform_hr_to_broker = execute_sql(task_id='transform_hr_to_broker',
-                                         sql_file_path='queries/transform_load_dim_broker.sql',
-                                         truncate_write=True)
+    transform_hr_to_broker = insert_overwrite(task_id='transform_hr_to_broker',
+                                              sql_file_path='queries/transform_load_dim_broker.sql',
+                                              destination_table='master.dim_broker')
 
     [load_date_file_to_master, load_hr_file_to_staging] >> transform_hr_to_broker

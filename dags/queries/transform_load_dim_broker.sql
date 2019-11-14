@@ -6,20 +6,6 @@
 
 -- For surrogate key strategy to concat OLTP Key -> EmployeeID with current timestamp epoch in Seconds
 
-INSERT INTO
-    master.dim_broker (SK_BrokerID,
-                       BrokerID,
-                       ManagerID,
-                       FirstName,
-                       LastName,
-                       MiddleInitial,
-                       Branch,
-                       Office,
-                       Phone,
-                       IsCurrent,
-                       BatchID,
-                       EffectiveDate,
-                       EndDate)
 WITH
     min_date AS (
         SELECT
