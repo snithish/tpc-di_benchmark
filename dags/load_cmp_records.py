@@ -37,4 +37,8 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                 sql_file_path='queries/transform_finwire_to_cmp.sql',
                                                 destination_table='staging.cmp_records')
 
-    load_finwire_staging >> [load_cmp_records_staging]
+    load_dim_company_from_cmp_records = insert_overwrite(task_id='load_dim_company_from_cmp_records',
+                                                         sql_file_path='queries/load_cmp_records_to_dim_company.sql',
+                                                         destination_table='master.dim_company')
+
+    load_finwire_staging >> [load_cmp_records_staging] >> load_dim_company_from_cmp_records
