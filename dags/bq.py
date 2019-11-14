@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import datetime
 
 from airflow import DAG
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
