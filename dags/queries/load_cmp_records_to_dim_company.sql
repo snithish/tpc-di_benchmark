@@ -1,3 +1,20 @@
+CREATE TEMP FUNCTION
+  invalidSPRating(SPRating STRING) AS (SPRating NOT IN ("AAA",
+      "AA+",
+      "AA-",
+      "A+",
+      "A-",
+      "BBB+",
+      "BBB-",
+      "BB+",
+      "BB-",
+      "B+",
+      "B-",
+      "CCC+",
+      "CCC-",
+      "CC",
+      "C",
+      "D"));
 WITH
   cmp_record_effective_date AS (
   SELECT
@@ -13,13 +30,13 @@ SELECT
   cmp.CompanyName AS Name,
   ind.IN_NAME AS Industry,
   CASE
-    WHEN cmp.SPRating NOT IN ("AAA", "AA+", "AA-", "A+", "A-", "BBB+", "BBB-", "BB+", "BB-", "B+", "B-", "CCC+", "CCC-", "CC", "C", "D") THEN NULL
+    WHEN invalidSPRating(cmp.SPRating) THEN NULL
   ELSE
   cmp.SPRating
 END
   AS SPRating,
   CASE
-    WHEN cmp.SPRating NOT IN ("AAA", "AA+", "AA-", "A+", "A-", "BBB+", "BBB-", "BB+", "BB-", "B+", "B-", "CCC+", "CCC-", "CC", "C", "D") THEN NULL
+    WHEN invalidSPRating(cmp.SPRating) THEN NULL
     WHEN STARTS_WITH(cmp.SPRating, "A")
   OR STARTS_WITH(cmp.SPRating, "BBB") THEN FALSE
   ELSE
