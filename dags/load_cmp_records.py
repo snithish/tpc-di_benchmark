@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 from constants import GCS_BUCKET, BIG_QUERY_CONN_ID, GOOGLE_CLOUD_DEFAULT
-from utils import insert_overwrite
+from utils import insert_overwrite, execute_sql
 
 AIRFLOW = 'airflow'
 
@@ -41,4 +41,8 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                          sql_file_path='queries/load_cmp_records_to_dim_company.sql',
                                                          destination_table='master.dim_company')
 
-    load_finwire_staging >> [load_cmp_records_staging] >> load_dim_company_from_cmp_records
+    process_error_cmp_records = execute_sql(task_id='process_cmp_records_error',
+                                            sql_file_path="queries/process_cmp_records_error.sql")
+
+    load_cmp_records_staging >> load_dim_company_from_cmp_records
+    load_finwire_staging >> [load_cmp_records_staging, process_error_cmp_records]
