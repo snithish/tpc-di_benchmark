@@ -304,31 +304,30 @@ CREATE TABLE
                            DESCRIPTION STRING NOT NULL );
   ---- Schema of FINWIRE_SEC -> Refer Page 30 2.2.2.8
 CREATE TABLE
-  staging.sec_records(
+    staging.sec_records(
     -- Posting date & time as YYYYMMDD-HHMMSS
-    PTS STRING NOT NULL,
-    -- "SEC” Type
-    RECTYPE STRING NOT NULL,
+                           PTS DATETIME NOT NULL,
     -- Security symbol
-    SYMBOL STRING NOT NULL,
+                           Symbol STRING NOT NULL,
     -- Issue type
-    ISSUETYPE STRING NOT NULL,
+                           IssueType STRING NOT NULL,
     -- ‘ACTV’ for Active security, ‘INAC’ for inactive
-    STATUS STRING NOT NULL,
+                           Status STRING NOT NULL,
     -- Security name
-    NAME STRING NOT NULL,
+                           Name STRING NOT NULL,
     -- ID of the exchange the security is traded on
-    EXID STRING NOT NULL,
+                           ExID STRING NOT NULL,
     -- Number of shares outstanding
-    SHOUT STRING NOT NULL,
+                           ShOut STRING NOT NULL,
     -- Date of first trade as YYYYMMDD
-    FIRSTTRADEDATE STRING NOT NULL,
+                           FirstTradeDate DATE NOT NULL,
     -- Date of first trade on exchange as YYYYMMDD
-    FIRSTTRADEEXCHG STRING NOT NULL,
+                           FirstTradeExchg DATE NOT NULL,
     -- Dividend as VALUE_T
-    DIVIDEND STRING NOT NULL,
+                           Dividend NUMERIC NOT NULL,
     -- Company CIK number (if only digits, 10 chars) or name (if not only digits, 60 chars)
-    CONAMEORCIK STRING NOT NULL );
+                           CIK INT64,
+                           CompanyName STRING);
   ---- Schema of FINWIRE_FIN -> Refer Page 31 2.2.2.8
 CREATE TABLE
   staging.fin_records(
