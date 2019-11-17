@@ -6,7 +6,7 @@ SELECT
     TRIM(SUBSTR(ROW, 40, 4)) AS Status,
     TRIM(SUBSTR(ROW, 44, 70)) AS Name,
     TRIM(SUBSTR(ROW, 114, 6)) AS ExID,
-    TRIM(SUBSTR(ROW, 120, 13)) AS ShOut,
+    CAST(TRIM(SUBSTR(ROW, 120, 13)) AS INT64) AS ShOut,
     PARSE_DATE('%E4Y%m%d',
                TRIM(SUBSTR(ROW, 133, 8))) AS FirstTradeDate,
     PARSE_DATE('%E4Y%m%d',
