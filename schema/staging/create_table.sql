@@ -365,3 +365,7 @@ CREATE TABLE
     DILUTEDSHOUT STRING NOT NULL,
     -- Company CIK number (if only digits, 10 chars) or name (if not only digits, 60 chars)
     CONAMEORCIK STRING NOT NULL );
+
+CREATE TABLE staging.batch_date (
+    BatchDate DATE NOT NULL
+);

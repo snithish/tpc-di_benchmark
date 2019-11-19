@@ -3,7 +3,7 @@ from datetime import datetime
 from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
-from constants import GCS_BUCKET, BIG_QUERY_CONN_ID, GOOGLE_CLOUD_DEFAULT, CSV_EXTENSION
+from constants import GOOGLE_CLOUD_DEFAULT, BIG_QUERY_CONN_ID, CSV_EXTENSION, GCS_BUCKET
 from utils import construct_gcs_to_bq_operator, get_file_path
 
 AIRFLOW = 'airflow'
@@ -78,4 +78,10 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
                                                                      {"name": "NetWorth", "type": "INTEGER",
                                                                       "mode": "NULLABLE"}], 'staging.prospect')
 
-    [load_customer_management_staging, load_prospect_file_to_staging]
+    load_batch_date_from_file = construct_gcs_to_bq_operator('load_batch_date_from_file',
+                                                             get_file_path(False, 'BatchDate'), [
+                                                                 {"name": "BatchDate", "type": "DATE",
+                                                                  "mode": "REQUIRED"}
+                                                             ], 'staging.batch_date')
+
+    [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
