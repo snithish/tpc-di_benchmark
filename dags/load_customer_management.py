@@ -87,7 +87,7 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
     load_customer_from_customer_management = insert_overwrite(task_id='load_customer_from_customer_management',
                                                               sql_file_path='queries'
                                                                             '/load_customer_records_from_customer_management.sql',
-                                                              destination_table='staging.customer')
+                                                              destination_table='staging.customer_historical')
 
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
