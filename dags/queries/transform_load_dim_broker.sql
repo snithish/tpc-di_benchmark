@@ -1,11 +1,7 @@
 -- noinspection SqlNoDataSourceInspectionForFile
-
 -- Load from staging.hr to master.dim_broker
-
 -- Refer to Page 60 -> 4.5.2
-
--- For surrogate key strategy to concat OLTP Key -> EmployeeID with current timestamp epoch in Seconds
-
+-- For surrogate key strategy to concat OLTP Key -> EmployeeID with effective date
 WITH
     min_date AS (
         SELECT
@@ -13,8 +9,8 @@ WITH
         FROM
             master.dim_date)
 SELECT
-    CAST(CONCAT(CAST(UNIX_SECONDS(CURRENT_TIMESTAMP()) AS STRING), '', CAST(EmployeeID AS STRING)) AS INT64) AS SK_BrokerID,
-    EmployeeID,
+    CAST(CONCAT(FORMAT_DATE('%E4Y%m%d', min_date.EffectiveDate), '', CAST(EmployeeID AS STRING)) AS INT64) AS SK_BrokerID,
+    EmployeeID AS BrokerID,
     ManagerID,
     EmployeeFirstName,
     EmployeeLastName,
