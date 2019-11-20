@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 from constants import GOOGLE_CLOUD_DEFAULT, BIG_QUERY_CONN_ID, CSV_EXTENSION, GCS_BUCKET
-from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, insert_if_empty
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, insert_if_empty, execute_sql
 
 AIRFLOW = 'airflow'
 
@@ -98,12 +98,17 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
         sql_file_path='queries/load_dim_customer_from_staging_customer_historical.sql',
         destination_table='master.dim_customer')
 
+    process_error_customer_historical_records = execute_sql(task_id='process_error_customer_historical_records',
+                                                            sql_file_path="queries/process_customer_historical_error.sql")
+
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
     load_customer_management_staging >> load_customer_from_customer_management
 
     [load_customer_from_customer_management, load_prospect_file_to_staging,
      load_batch_date_from_file] >> load_dim_prospect_from_staging_historical
+
+    load_customer_from_customer_management >> process_error_customer_historical_records
 
     [load_customer_from_customer_management,
      load_dim_prospect_from_staging_historical] >> load_dim_customer_from_staging_customer_historical
