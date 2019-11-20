@@ -71,7 +71,7 @@ SELECT
     latest_value(ARRAY_AGG(LastName) OVER w) AS LastName,
     latest_value(ARRAY_AGG(FirstName) OVER w) AS FirstName,
     latest_value(ARRAY_AGG(MiddleInitial) OVER w) AS MiddleInitial,
-    Gender,
+    latest_value(ARRAY_AGG(Gender) OVER w) AS Gender,
     latest_value(ARRAY_AGG(Tier) OVER w) AS Tier,
     latest_value(ARRAY_AGG(DOB) OVER w) AS DOB,
     latest_value(ARRAY_AGG(AddressLine1) OVER w) AS AddressLine1,
