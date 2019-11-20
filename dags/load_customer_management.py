@@ -84,26 +84,36 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
                                                                   "mode": "REQUIRED"}
                                                              ], 'staging.batch_date')
 
-    load_customer_from_customer_management = insert_overwrite(task_id='load_customer_from_customer_management',
-                                                              sql_file_path='queries'
-                                                                            '/load_customer_records_from_customer_management.sql',
-                                                              destination_table='staging.customer_historical')
+    load_customer_from_customer_management = insert_overwrite(
+        task_id='load_customer_from_customer_management',
+        sql_file_path='queries'
+                      '/load_customer_records_from_customer_management.sql',
+        destination_table='staging.customer_historical')
 
-    load_dim_prospect_from_staging_historical = insert_if_empty(task_id='load_dim_prospect_from_staging_historical',
-                                                                sql_file_path='queries/load_prospect_historical_to_dim_prospect.sql',
-                                                                destination_table='master.prospect')
+    load_account_historical_from_customer_management = insert_overwrite(
+        task_id='load_account_historical_from_customer_management',
+        sql_file_path='queries'
+                      '/load_account_records_from_customer_management.sql',
+        destination_table='staging.account_historical')
+
+    load_dim_prospect_from_staging_historical = insert_if_empty(
+        task_id='load_dim_prospect_from_staging_historical',
+        sql_file_path='queries/load_prospect_historical_to_dim_prospect.sql',
+        destination_table='master.prospect')
 
     load_dim_customer_from_staging_customer_historical = insert_if_empty(
         task_id='load_dim_customer_from_staging_customer_historical',
         sql_file_path='queries/load_dim_customer_from_staging_customer_historical.sql',
         destination_table='master.dim_customer')
 
-    process_error_customer_historical_records = execute_sql(task_id='process_error_customer_historical_records',
-                                                            sql_file_path="queries/process_customer_historical_error.sql")
+    process_error_customer_historical_records = execute_sql(
+        task_id='process_error_customer_historical_records',
+        sql_file_path="queries/process_customer_historical_error.sql")
 
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
-    load_customer_management_staging >> load_customer_from_customer_management
+    load_customer_management_staging >> [load_customer_from_customer_management,
+                                         load_account_historical_from_customer_management]
 
     [load_customer_from_customer_management, load_prospect_file_to_staging,
      load_batch_date_from_file] >> load_dim_prospect_from_staging_historical
