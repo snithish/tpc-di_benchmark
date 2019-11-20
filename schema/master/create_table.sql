@@ -52,6 +52,7 @@ CREATE TABLE
     -- Value of inventory on hand at the end of quarter
     );
   ---- Schema of prospect table -> Refer Page 45 3.2.15
+  DROP TABLE IF EXISTS master.prospect;
 CREATE TABLE
   master.prospect ( AgencyID STRING NOT NULL,
     -- Unique identifier from agency
@@ -304,6 +305,7 @@ CREATE TABLE
     --Ending of date range when this record was the current record. A record that is not expired will use the date 9999-12-31.
     );
   -- Schema of DimCustomer table -> Refer Page 39 3.2.4
+DROP TABLE IF EXISTS master.dim_customer;
 CREATE TABLE
   master.dim_customer(SK_CustomerID INT64 NOT NULL,
     --Surrogate key for CustomerID
@@ -359,7 +361,7 @@ CREATE TABLE
     --Agency identifier
     CreditRating INT64,
     --Credit rating
-    NetWorth NUMERIC,
+    NetWorth INT64,
     --Net worth
     MarketingNameplate STRING,
     --Marketing nameplate

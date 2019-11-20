@@ -93,9 +93,17 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
                                                                 sql_file_path='queries/load_prospect_historical_to_dim_prospect.sql',
                                                                 destination_table='master.prospect')
 
+    load_dim_customer_from_staging_customer_historical = insert_if_empty(
+        task_id='load_dim_customer_from_staging_customer_historical',
+        sql_file_path='queries/load_dim_customer_from_staging_customer_historical.sql',
+        destination_table='master.dim_customer')
+
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
     load_customer_management_staging >> load_customer_from_customer_management
 
     [load_customer_from_customer_management, load_prospect_file_to_staging,
      load_batch_date_from_file] >> load_dim_prospect_from_staging_historical
+
+    [load_customer_from_customer_management,
+     load_dim_prospect_from_staging_historical] >> load_dim_customer_from_staging_customer_historical
