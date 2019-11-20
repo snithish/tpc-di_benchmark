@@ -106,6 +106,11 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
         sql_file_path='queries/load_dim_customer_from_staging_customer_historical.sql',
         destination_table='master.dim_customer')
 
+    load_dim_account_from_staging_account_historical = insert_if_empty(
+        task_id='load_dim_account_from_staging_account_historical',
+        sql_file_path='queries/load_dim_account_from_staging_account_historical.sql',
+        destination_table='master.dim_account')
+
     process_error_customer_historical_records = execute_sql(
         task_id='process_error_customer_historical_records',
         sql_file_path="queries/process_customer_historical_error.sql")
@@ -122,3 +127,6 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
 
     [load_customer_from_customer_management,
      load_dim_prospect_from_staging_historical] >> load_dim_customer_from_staging_customer_historical
+
+    [load_account_historical_from_customer_management,
+     load_dim_customer_from_staging_customer_historical] >> load_dim_account_from_staging_account_historical
