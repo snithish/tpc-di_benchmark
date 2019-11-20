@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 from constants import GOOGLE_CLOUD_DEFAULT, BIG_QUERY_CONN_ID, CSV_EXTENSION, GCS_BUCKET
-from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, insert_if_empty
 
 AIRFLOW = 'airflow'
 
@@ -89,6 +89,13 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
                                                                             '/load_customer_records_from_customer_management.sql',
                                                               destination_table='staging.customer_historical')
 
+    load_dim_prospect_from_staging_historical = insert_if_empty(task_id='load_dim_prospect_from_staging_historical',
+                                                                sql_file_path='queries/load_prospect_historical_to_dim_prospect.sql',
+                                                                destination_table='master.prospect')
+
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
     load_customer_management_staging >> load_customer_from_customer_management
+
+    [load_customer_from_customer_management, load_prospect_file_to_staging,
+     load_batch_date_from_file] >> load_dim_prospect_from_staging_historical
