@@ -52,6 +52,10 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                          sql_file_path='queries/load_sec_records_to_dim_security.sql',
                                                          destination_table='master.dim_security')
 
+    load_fin_records_staging = insert_overwrite(task_id='extract_fin_records_from_finwire',
+                                                sql_file_path='queries/transform_finwire_to_fin.sql',
+                                                destination_table='staging.fin_records')
+
     load_cmp_records_staging >> [process_error_cmp_records, load_dim_company_from_cmp_records]
-    load_finwire_staging >> [load_cmp_records_staging, load_sec_records_staging]
+    load_finwire_staging >> [load_cmp_records_staging, load_sec_records_staging, load_fin_records_staging]
     [load_dim_company_from_cmp_records, load_sec_records_staging] >> load_dim_security_from_sec_records
