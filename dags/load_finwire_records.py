@@ -37,9 +37,9 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                 sql_file_path='queries/transform_finwire_to_cmp.sql',
                                                 destination_table='staging.cmp_records')
 
-    load_dim_company_from_cmp_records = insert_overwrite(task_id='load_dim_company_from_cmp_records',
-                                                         sql_file_path='queries/load_cmp_records_to_dim_company.sql',
-                                                         destination_table='master.dim_company')
+    load_dim_company_from_cmp_records = insert_if_empty(task_id='load_dim_company_from_cmp_records',
+                                                        sql_file_path='queries/load_cmp_records_to_dim_company.sql',
+                                                        destination_table='master.dim_company')
 
     process_error_cmp_records = execute_sql(task_id='process_cmp_records_error',
                                             sql_file_path="queries/process_cmp_records_error.sql")
@@ -56,6 +56,11 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                 sql_file_path='queries/transform_finwire_to_fin.sql',
                                                 destination_table='staging.fin_records')
 
+    load_dim_finance_from_fin_records = insert_if_empty(task_id='load_dim_finance_from_fin_records',
+                                                        sql_file_path='queries/load_fin_records_to_financial.sql',
+                                                        destination_table='master.financial')
+
     load_cmp_records_staging >> [process_error_cmp_records, load_dim_company_from_cmp_records]
     load_finwire_staging >> [load_cmp_records_staging, load_sec_records_staging, load_fin_records_staging]
     [load_dim_company_from_cmp_records, load_sec_records_staging] >> load_dim_security_from_sec_records
+    [load_dim_company_from_cmp_records, load_fin_records_staging] >> load_dim_finance_from_fin_records
