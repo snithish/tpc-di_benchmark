@@ -2,7 +2,7 @@ from datetime import datetime
 
 from airflow import DAG
 
-from utils import construct_gcs_to_bq_operator, get_file_path
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_if_empty, reset_table
 
 AIRFLOW = 'airflow'
 
@@ -56,3 +56,11 @@ with DAG('load_dim_trade_historical', schedule_interval=None, default_args=defau
                                                                      {"name": "TH_ST_ID", "type": "STRING",
                                                                       "mode": "REQUIRED"}],
                                                                  'staging.trade_history_historical')
+
+    recreate_dim_trade = reset_table('dim_trade')
+
+    load_dim_trade_from_historical = insert_if_empty(task_id="load_dim_trade_from_historical",
+                                                     sql_file_path="queries/load_trade_historical_to_dim_trade.sql",
+                                                     destination_table="master.dim_trade")
+
+    [load_trade_history_to_staging, load_trade_to_staging] >> recreate_dim_trade >> load_dim_trade_from_historical

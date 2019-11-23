@@ -443,6 +443,7 @@ CREATE TABLE
     --Indicates a time during office hours
     );
   -- Schema of DimTrade table -> Refer Page 42 3.2.7.1
+  DROP TABLE IF EXISTS master.dim_trade;
 CREATE TABLE
   master.dim_trade(TradeID INT64 NOT NULL,
     --Trade identifier
