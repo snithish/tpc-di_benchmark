@@ -38,7 +38,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         {"name": "HolidayFlag", "type": "BOOLEAN", "mode": "NULLABLE"}], 'master.dim_date')
 
     load_time_file_to_master = construct_gcs_to_bq_operator('load_time_to_master', get_file_path(False, 'Time'), [
-        {"name": "INT64imeID", "type": "INT64", "mode": "REQUIRED"},
+        {"name": "SK_TimeID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "TimeValue", "type": "STRING", "mode": "REQUIRED"},
         {"name": "HourID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "HourDesc", "type": "STRING", "mode": "REQUIRED"},
