@@ -108,9 +108,3 @@ FROM recent_trade t
          JOIN master.dim_account acc
               ON t.T_CA_ID = acc.AccountID AND DATE(t.creation_time) >= acc.EffectiveDate AND
                  DATE(t.creation_time) < acc.EndDate;
-
--- 1352487 - with both sec and acc
--- 1300824
--- 1300824 - without sec and acc
--- 1283487 - with sec alone
--- 1137531 - with acc alone
