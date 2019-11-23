@@ -30,12 +30,12 @@ FROM
         JOIN
     master.dim_company cmp
     ON
-            (sec.CIK IS NOT NULL
+            ((sec.CIK IS NOT NULL
                 AND sec.CIK = cmp.CompanyID)
-            OR (sec.CIK IS NULL
-            AND sec.CompanyName = cmp.Name)
-                AND DATE(sec.PTS) BETWEEN cmp.EffectiveDate
-                   AND cmp.EndDate
+                OR (sec.CIK IS NULL
+                    AND sec.CompanyName = cmp.Name))
+            AND DATE(sec.PTS) >= cmp.EffectiveDate
+            AND DATE(sec.PTS) < cmp.EndDate
         JOIN
     master.status_type st
     ON
