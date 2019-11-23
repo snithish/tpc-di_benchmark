@@ -34,6 +34,10 @@ def execute_sql(task_id: str, sql_file_path: str) -> BigQueryOperator:
     )
 
 
+def reset_table(table_name: str) -> BigQueryOperator:
+    return execute_sql(task_id="reset_" + table_name, sql_file_path='queries/reset/reset_' + table_name + '.sql')
+
+
 def insert_if_empty(task_id: str, sql_file_path: str, destination_table: str) -> BigQueryOperator:
     return BigQueryOperator(
         task_id=task_id,

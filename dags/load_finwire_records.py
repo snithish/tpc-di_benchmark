@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 from constants import GCS_BUCKET, BIG_QUERY_CONN_ID, GOOGLE_CLOUD_DEFAULT
-from utils import insert_overwrite, execute_sql, insert_if_empty
+from utils import insert_overwrite, execute_sql, insert_if_empty, reset_table
 
 AIRFLOW = 'airflow'
 
@@ -60,7 +60,14 @@ with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) 
                                                         sql_file_path='queries/load_fin_records_to_financial.sql',
                                                         destination_table='master.financial')
 
+    recreate_dim_company = reset_table('dim_company')
+    recreate_dim_security = reset_table('dim_security')
+    recreate_financial = reset_table('financial')
+
+    load_cmp_records_staging >> recreate_dim_company >> load_dim_company_from_cmp_records
     load_cmp_records_staging >> [process_error_cmp_records, load_dim_company_from_cmp_records]
     load_finwire_staging >> [load_cmp_records_staging, load_sec_records_staging, load_fin_records_staging]
-    [load_dim_company_from_cmp_records, load_sec_records_staging] >> load_dim_security_from_sec_records
-    [load_dim_company_from_cmp_records, load_fin_records_staging] >> load_dim_finance_from_fin_records
+    [load_dim_company_from_cmp_records,
+     load_sec_records_staging] >> recreate_dim_security >> load_dim_security_from_sec_records
+    [load_dim_company_from_cmp_records,
+     load_fin_records_staging] >> recreate_financial >> load_dim_finance_from_fin_records
