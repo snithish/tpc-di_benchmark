@@ -104,7 +104,13 @@ FROM recent_trade t
          JOIN master.trade_type tt ON t.T_TT_ID = tt.TT_ID
          JOIN master.dim_security sec
               ON t.T_S_SYMB = sec.Symbol AND DATE(t.creation_time) >= sec.EffectiveDate AND
-                 t.creation_time < sec.EndDate
+                 DATE(t.creation_time) < sec.EndDate
          JOIN master.dim_account acc
               ON t.T_CA_ID = acc.AccountID AND DATE(t.creation_time) >= acc.EffectiveDate AND
-                 t.creation_time < acc.EndDate;
+                 DATE(t.creation_time) < acc.EndDate;
+
+-- 1352487 - with both sec and acc
+-- 1300824
+-- 1300824 - without sec and acc
+-- 1283487 - with sec alone
+-- 1137531 - with acc alone
