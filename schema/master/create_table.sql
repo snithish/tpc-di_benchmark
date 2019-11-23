@@ -218,6 +218,7 @@ CREATE TABLE
     );
 
   -- Schema of DimAccount table -> Refer Page 38 3.2.1
+  DROP TABLE IF EXISTS master.dim_account;
 CREATE TABLE
   master.dim_account(SK_AccountID INT64 NOT NULL,
     --Surrogate key for AccountID

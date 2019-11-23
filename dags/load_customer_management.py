@@ -4,7 +4,8 @@ from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 from constants import GOOGLE_CLOUD_DEFAULT, BIG_QUERY_CONN_ID, CSV_EXTENSION, GCS_BUCKET
-from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, insert_if_empty, execute_sql
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, insert_if_empty, execute_sql, \
+    reset_table
 
 AIRFLOW = 'airflow'
 
@@ -115,18 +116,22 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
         task_id='process_error_customer_historical_records',
         sql_file_path="queries/process_customer_historical_error.sql")
 
+    recreate_prospect = reset_table('prospect')
+    recreate_dim_account = reset_table('dim_account')
+    recreate_dim_customer = reset_table('dim_customer')
+
     [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
 
     load_customer_management_staging >> [load_customer_from_customer_management,
                                          load_account_historical_from_customer_management]
 
     [load_customer_from_customer_management, load_prospect_file_to_staging,
-     load_batch_date_from_file] >> load_dim_prospect_from_staging_historical
+     load_batch_date_from_file] >> recreate_prospect >> load_dim_prospect_from_staging_historical
 
     load_customer_from_customer_management >> process_error_customer_historical_records
 
     [load_customer_from_customer_management,
-     load_dim_prospect_from_staging_historical] >> load_dim_customer_from_staging_customer_historical
+     load_dim_prospect_from_staging_historical] >> recreate_dim_customer >> load_dim_customer_from_staging_customer_historical
 
     [load_account_historical_from_customer_management,
-     load_dim_customer_from_staging_customer_historical] >> load_dim_account_from_staging_account_historical
+     load_dim_customer_from_staging_customer_historical] >> recreate_dim_account >> load_dim_account_from_staging_account_historical
