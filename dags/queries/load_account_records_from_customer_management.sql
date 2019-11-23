@@ -73,7 +73,7 @@ SELECT
          "INACTIVE") AS Status,
     acc.EffectiveDate,
     CASE
-        WHEN inact.CustomerID IS NOT NULL THEN inact.effective_date
+        WHEN inact.CustomerID IS NOT NULL THEN IF(acc.EndDate < inact.effective_date, acc.EndDate, inact.effective_date)
         ELSE
             acc.EndDate
         END
