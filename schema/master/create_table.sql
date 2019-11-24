@@ -504,6 +504,7 @@ CREATE TABLE
     --Varies with the reason for logging the message
     );
   -- Schema of FactCashBalances table -> Refer Page 43 3.2.9
+  DROP TABLE IF EXISTS master.fact_cash_balances;
 CREATE TABLE
   master.fact_cash_balances(SK_CustomerID INT64 NOT NULL,
     --Surrogate key for CustomerID
