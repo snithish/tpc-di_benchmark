@@ -31,7 +31,7 @@ with DAG('load_facts_historical', schedule_interval=None, default_args=default_a
 
     load_fact_cash_balances_from_staging_history = insert_if_empty(
         task_id="load_fact_cash_balances_from_staging_history",
-        sql_file_path='queries/load_cash_balanaces_historical_to_dim_cash_balances.sql',
+        sql_file_path='queries/load_cash_balances_historical_to_dim_cash_balances.sql',
         destination_table='master.fact_cash_balances')
 
     load_holding_history_historical_to_staging = construct_gcs_to_bq_operator(
