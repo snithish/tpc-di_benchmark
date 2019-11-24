@@ -54,5 +54,22 @@ with DAG('load_facts_historical', schedule_interval=None, default_args=default_a
         sql_file_path='queries/load_holdings_historical_to_fact_holdings.sql',
         destination_table='master.fact_holdings')
 
+    load_watch_history_historical_to_staging = construct_gcs_to_bq_operator(
+        'load_watch_history_historical_to_staging',
+        get_file_path(False, 'WatchHistory'),
+        [{"name": "W_C_ID", "type": "INTEGER", "mode": "REQUIRED"},
+         {"name": "W_S_SYMB", "type": "STRING", "mode": "REQUIRED"},
+         {"name": "W_DTS", "type": "DATETIME", "mode": "REQUIRED"},
+         {"name": "W_ACTION", "type": "STRING", "mode": "REQUIRED"}],
+        'staging.watch_history_historical')
+
+    recreate_fact_watches = reset_table('fact_watches')
+
+    load_fact_watches_from_staging_watch_history = insert_if_empty(
+        task_id="load_fact_watches_from_staging_watch_history",
+        sql_file_path='queries/load_watch_history_historical_to_fact_watches.sql',
+        destination_table='master.fact_watches')
+
 load_cash_transactions_to_staging >> recreate_fact_cash_balances >> load_fact_cash_balances_from_staging_history
 load_holding_history_historical_to_staging >> recreate_fact_holdings >> load_fact_holding_from_staging_history
+load_watch_history_historical_to_staging >> recreate_fact_watches >> load_fact_watches_from_staging_watch_history
