@@ -109,4 +109,10 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                               sql_file_path='queries/transform_load_dim_broker.sql',
                                               destination_table='master.dim_broker')
 
+    load_batch_date_from_file = construct_gcs_to_bq_operator('load_batch_date_from_file',
+                                                             get_file_path(False, 'BatchDate'), [
+                                                                 {"name": "BatchDate", "type": "DATE",
+                                                                  "mode": "REQUIRED"}
+                                                             ], 'staging.batch_date')
+
     [load_date_file_to_master, load_hr_file_to_staging] >> transform_hr_to_broker

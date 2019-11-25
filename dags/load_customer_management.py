@@ -79,12 +79,6 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
                                                                      {"name": "NetWorth", "type": "INTEGER",
                                                                       "mode": "NULLABLE"}], 'staging.prospect')
 
-    load_batch_date_from_file = construct_gcs_to_bq_operator('load_batch_date_from_file',
-                                                             get_file_path(False, 'BatchDate'), [
-                                                                 {"name": "BatchDate", "type": "DATE",
-                                                                  "mode": "REQUIRED"}
-                                                             ], 'staging.batch_date')
-
     load_customer_from_customer_management = insert_overwrite(
         task_id='load_customer_from_customer_management',
         sql_file_path='queries'
@@ -120,13 +114,13 @@ with DAG('load_customer_account', schedule_interval=None, default_args=default_a
     recreate_dim_account = reset_table('dim_account')
     recreate_dim_customer = reset_table('dim_customer')
 
-    [load_customer_management_staging, load_prospect_file_to_staging, load_batch_date_from_file]
+    [load_customer_management_staging, load_prospect_file_to_staging]
 
     load_customer_management_staging >> [load_customer_from_customer_management,
                                          load_account_historical_from_customer_management]
 
-    [load_customer_from_customer_management, load_prospect_file_to_staging,
-     load_batch_date_from_file] >> recreate_prospect >> load_dim_prospect_from_staging_historical
+    [load_customer_from_customer_management,
+     load_prospect_file_to_staging] >> recreate_prospect >> load_dim_prospect_from_staging_historical
 
     load_customer_from_customer_management >> process_error_customer_historical_records
 
