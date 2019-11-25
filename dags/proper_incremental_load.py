@@ -2,7 +2,7 @@ from datetime import datetime
 
 from airflow import DAG
 
-from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql
+from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql, reset_table
 
 default_args = {
     'owner': 'airflow',
@@ -92,4 +92,6 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
 
     update_batch_id = execute_sql(task_id='increment_batch_id', sql_file_path='queries/increment_batch.sql')
 
-    [load_batch_date_from_file, update_batch_id, load_customer_file_to_staging]
+    recreate_dim_customer_schema_staging = reset_table(table_name='staging_dim_customer')
+
+    [load_batch_date_from_file, update_batch_id, load_customer_file_to_staging, recreate_dim_customer_schema_staging]
