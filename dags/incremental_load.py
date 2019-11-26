@@ -14,24 +14,6 @@ default_args = {
 }
 
 with DAG('incremental_load', schedule_interval=None, default_args=default_args) as dag:
-    load_account_file_to_staging = construct_gcs_to_bq_operator('load_account_to_staging',
-                                                                get_file_path(True, 'Account'), [
-                                                                    {"name": "CDC_FLAG", "type": "STRING",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CDC_DSN", "type": "INT64",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CA_ID", "type": "INT64",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CA_B_ID", "type": "INT64",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CA_C_ID", "type": "INT64",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CA_NAME", "type": "STRING",
-                                                                     "mode": "NULLABLE"},
-                                                                    {"name": "CA_TAX_ST", "type": "INT64",
-                                                                     "mode": "REQUIRED"},
-                                                                    {"name": "CA_ST_ID", "type": "STRING",
-                                                                     "mode": "REQUIRED"}], 'staging.account')
     load_cash_transaction_file_to_staging = construct_gcs_to_bq_operator('load_cash_transaction_to_staging',
                                                                          get_file_path(True, 'CashTransaction'), [
                                                                              {"name": "CDC_FLAG", "type": "STRING",

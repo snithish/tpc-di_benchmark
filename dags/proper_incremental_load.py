@@ -118,6 +118,29 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="add_history_tracking_record_for_customer_in_account",
         sql_file_path='queries/incremental/resync_dim_account_with_new_customer_sk.sql')
 
+    load_account_file_to_staging = construct_gcs_to_bq_operator('load_account_to_staging',
+                                                                get_file_path(True, 'Account'), [
+                                                                    {"name": "CDC_FLAG", "type": "STRING",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CDC_DSN", "type": "INT64",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CA_ID", "type": "INT64",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CA_B_ID", "type": "INT64",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CA_C_ID", "type": "INT64",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CA_NAME", "type": "STRING",
+                                                                     "mode": "NULLABLE"},
+                                                                    {"name": "CA_TAX_ST", "type": "INT64",
+                                                                     "mode": "REQUIRED"},
+                                                                    {"name": "CA_ST_ID", "type": "STRING",
+                                                                     "mode": "REQUIRED"}], 'staging.account')
+
+    merge_master_dim_account_with_staging_account = execute_sql(
+        task_id="merge_master_dim_account_with_staging_account",
+        sql_file_path='queries/incremental/merge_staging_account_with_master_dim_account.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -134,4 +157,7 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
      merge_master_dim_customer_with_staging_dim_customer] >> update_customer_status_prospect
 
     # Account Related tasks
+    [load_batch_date_from_file, update_batch_id,
+     load_account_file_to_staging] >> merge_master_dim_account_with_staging_account
     merge_master_dim_customer_with_staging_dim_customer >> add_history_tracking_record_for_customer_in_account
+    add_history_tracking_record_for_customer_in_account >> merge_master_dim_account_with_staging_account
