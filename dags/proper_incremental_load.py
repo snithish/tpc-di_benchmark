@@ -104,6 +104,10 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_dim_customer_with_staging_dim_customer",
         sql_file_path='queries/incremental/merge_staging_dim_customer_with_master_dim_customer.sql')
 
+    merge_master_prospect_with_staging_prospect = execute_sql(
+        task_id="merge_master_dim_customer_with_staging_dim_customer",
+        sql_file_path='queries/incremental/merge_staging_prospect_to_master_prospect.sql')
+
     prospect_file_to_staging = load_prospect_file_to_staging(True)
 
     # All Customer related tasks
@@ -114,4 +118,4 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
     # End Customer related tasks
 
     # Prospect Related tasks
-    prospect_file_to_staging
+    prospect_file_to_staging >> merge_master_prospect_with_staging_prospect
