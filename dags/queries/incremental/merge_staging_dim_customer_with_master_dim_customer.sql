@@ -2,13 +2,19 @@ MERGE INTO
     master.dim_customer old
     USING
         (
+            WITH deduplicated AS (
+                SELECT s.*
+                FROM staging.dim_customer s
+                         LEFT JOIN master.dim_customer c ON s.SK_CustomerID = c.SK_CustomerID
+                WHERE c.SK_CustomerID IS NULL
+            )
             SELECT CustomerID AS join_key,
                    *
-            FROM staging.dim_customer
+            FROM deduplicated
             UNION ALL
             SELECT NULL AS join_key,
                    *
-            FROM staging.dim_customer) new_record
+            FROM deduplicated) new_record
     ON
             old.CustomerID = new_record.join_key
             AND old.IsCurrent = TRUE
