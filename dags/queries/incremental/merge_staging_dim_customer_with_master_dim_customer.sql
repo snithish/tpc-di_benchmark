@@ -12,7 +12,7 @@ MERGE INTO
     ON
             old.CustomerID = new_record.join_key
             AND old.IsCurrent = TRUE
-    WHEN MATCHED AND new_record.EffectiveDate <> old.EffectiveDate THEN UPDATE SET old.IsCurrent = FALSE AND old.EndDate = new_record.EffectiveDate
+    WHEN MATCHED AND new_record.EffectiveDate <> old.EffectiveDate THEN UPDATE SET old.IsCurrent = FALSE, old.EndDate = new_record.EffectiveDate
     WHEN NOT MATCHED
         AND new_record.join_key IS NULL THEN
         INSERT

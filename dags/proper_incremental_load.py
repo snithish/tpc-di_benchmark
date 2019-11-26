@@ -114,6 +114,10 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="update_customer_status_prospect",
         sql_file_path='queries/incremental/update_is_customer_flag_prospect.sql')
 
+    add_history_tracking_record_for_customer_in_account = execute_sql(
+        task_id="add_history_tracking_record_for_customer_in_account",
+        sql_file_path='queries/incremental/resync_dim_account_with_new_customer_sk.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -128,3 +132,6 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
      prospect_file_to_staging] >> merge_master_prospect_with_staging_prospect
     [merge_master_prospect_with_staging_prospect,
      merge_master_dim_customer_with_staging_dim_customer] >> update_customer_status_prospect
+
+    # Account Related tasks
+    merge_master_dim_customer_with_staging_dim_customer >> add_history_tracking_record_for_customer_in_account
