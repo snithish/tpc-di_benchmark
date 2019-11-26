@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
 
 from common_tasks import load_prospect_file_to_staging
 from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql, reset_table, insert_if_empty
@@ -104,13 +105,17 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_dim_customer_with_staging_dim_customer",
         sql_file_path='queries/incremental/merge_staging_dim_customer_with_master_dim_customer.sql')
 
-    merge_master_prospect_with_staging_prospect = execute_sql(
-        task_id="merge_master_dim_customer_with_staging_dim_customer",
-        sql_file_path='queries/incremental/merge_staging_prospect_to_master_prospect.sql')
-
     prospect_file_to_staging = load_prospect_file_to_staging(True)
 
+    merge_master_prospect_with_staging_prospect = execute_sql(
+        task_id="merge_master_prospect_with_staging_prospect",
+        sql_file_path='queries/incremental/merge_staging_prospect_to_master_prospect.sql')
+
+    update_customer_status_prospect = DummyOperator(task_id="update_customer_status_prospect")
+
     # All Customer related tasks
+    # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
+    merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
     [load_batch_date_from_file, update_batch_id,
      load_customer_file_to_staging] >> recreate_dim_customer_schema_staging
     recreate_dim_customer_schema_staging >> load_staging_dim_customer_from_staging_customer
@@ -118,4 +123,7 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
     # End Customer related tasks
 
     # Prospect Related tasks
-    prospect_file_to_staging >> merge_master_prospect_with_staging_prospect
+    [load_batch_date_from_file, update_batch_id,
+     prospect_file_to_staging] >> merge_master_prospect_with_staging_prospect
+    [merge_master_prospect_with_staging_prospect,
+     merge_master_dim_customer_with_staging_dim_customer] >> update_customer_status_prospect

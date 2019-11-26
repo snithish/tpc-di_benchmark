@@ -4,7 +4,7 @@ from utils import construct_gcs_to_bq_operator, get_file_path, CSV_EXTENSION
 
 
 def load_prospect_file_to_staging(incremental: bool) -> GoogleCloudStorageToBigQueryOperator:
-    construct_gcs_to_bq_operator('load_prospect_historical_to_staging',
+    return construct_gcs_to_bq_operator('load_prospect_historical_to_staging',
                                  get_file_path(incremental, 'Prospect', CSV_EXTENSION), [
                                      {"name": "AgencyID", "type": "STRING",
                                       "mode": "REQUIRED"},

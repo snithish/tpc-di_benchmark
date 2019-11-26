@@ -16,27 +16,6 @@ FUNCTION
     NULL
     END
     );
-CREATE TEMPORARY
-FUNCTION
-    construct_MarketingNameplate(Income FLOAT64,
-    NumberCars FLOAT64,
-    NumberChildren FLOAT64,
-    Age FLOAT64,
-    CreditRating FLOAT64,
-    NumberCreditCards FLOAT64,
-    NetWorth FLOAT64)
-    RETURNS STRING
-    LANGUAGE js AS """
-result = [];
-if ((NetWorth !== null && NetWorth > 1000000) || (Income !== null && Income > 200000)) result.push(" HighValue ");
-if ((NumberChildren !== null && NumberChildren > 3) || (NumberCreditCards !== null && NumberCreditCards > 5)) result.push(" Expenses ");
-if ((Income !== null && Income < 50000) || (CreditRating !== null && CreditRating < 600) || (NetWorth !== null && NetWorth < 100000)) result.push(" MoneyAlert ");
-if ((NumberCars !== null && NumberCars > 3) || (NumberCreditCards !== null && NumberCreditCards > 7)) result.push(" Spender ");
-if ((Age !== null && Age < 25) && (NetWorth != null && NetWorth > 1000000)) result.push(" Inherited ");
-if (result.length == 0)
-    return null;
-return result.join("+");
-    """;
 WITH recent_customer AS (
     SELECT a.*
     FROM (SELECT *, row_number() over (PARTITION BY C_ID ORDER BY CDC_DSN DESC ) as row_num
@@ -81,13 +60,7 @@ WITH recent_customer AS (
                 p.AddressLine1,
                 p.AddressLine2,
                 p.PostalCode,
-                construct_MarketingNameplate(p.Income,
-                                             p.NumberCars,
-                                             p.NumberChildren,
-                                             p.Age,
-                                             p.CreditRating,
-                                             p.NumberCreditCards,
-                                             p.NetWorth) AS MarketingNameplate
+                p.MarketingNameplate
          FROM master.prospect p
      )
 SELECT CAST(CONCAT(FORMAT_DATE('%E4Y%m%d',
