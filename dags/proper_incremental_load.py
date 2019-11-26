@@ -2,6 +2,7 @@ from datetime import datetime
 
 from airflow import DAG
 
+from common_tasks import load_prospect_file_to_staging
 from utils import construct_gcs_to_bq_operator, get_file_path, execute_sql, reset_table, insert_if_empty
 
 default_args = {
@@ -103,7 +104,14 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_dim_customer_with_staging_dim_customer",
         sql_file_path='queries/incremental/merge_staging_dim_customer_with_master_dim_customer.sql')
 
+    prospect_file_to_staging = load_prospect_file_to_staging(True)
+
+    # All Customer related tasks
     [load_batch_date_from_file, update_batch_id,
      load_customer_file_to_staging] >> recreate_dim_customer_schema_staging
     recreate_dim_customer_schema_staging >> load_staging_dim_customer_from_staging_customer
     load_staging_dim_customer_from_staging_customer >> merge_master_dim_customer_with_staging_dim_customer
+    # End Customer related tasks
+
+    # Prospect Related tasks
+    prospect_file_to_staging
