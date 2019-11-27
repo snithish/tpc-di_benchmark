@@ -66,41 +66,7 @@ with DAG('incremental_load', schedule_interval=None, default_args=default_args) 
                                                                              "mode": "REQUIRED"}],
                                                                         'staging.holding_history')
 
-    load_trade_file_to_staging = construct_gcs_to_bq_operator('load_trade_to_staging',
-                                                              get_file_path(True, 'Trade'), [
-                                                                  {"name": "CDC_FLAG", "type": "STRING",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "CDC_DSN", "type": "INTEGER",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_ID", "type": "INTEGER",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_DTS", "type": "DATETIME",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_ST_ID", "type": "STRING",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_TT_ID", "type": "STRING",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_IS_CASH", "type": "BOOLEAN",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_S_SYMB", "type": "STRING",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_QTY", "type": "INTEGER",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_BID_PRICE", "type": "NUMERIC",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_CA_ID", "type": "INTEGER",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_EXEC_NAME", "type": "STRING",
-                                                                   "mode": "REQUIRED"},
-                                                                  {"name": "T_TRADE_PRICE", "type": "NUMERIC",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_CHRG", "type": "NUMERIC",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_COMM", "type": "NUMERIC",
-                                                                   "mode": "NULLABLE"},
-                                                                  {"name": "T_TAX", "type": "NUMERIC",
-                                                                   "mode": "NULLABLE"}],
-                                                              'staging.trade')
+
 
     load_watch_history_file_to_staging = construct_gcs_to_bq_operator('load_watch_history_to_staging',
                                                                       get_file_path(True, 'WatchHistory'), [

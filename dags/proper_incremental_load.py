@@ -141,6 +141,46 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_dim_account_with_staging_account",
         sql_file_path='queries/incremental/merge_staging_account_with_master_dim_account.sql')
 
+    load_trade_file_to_staging = construct_gcs_to_bq_operator('load_trade_to_staging',
+                                                              get_file_path(True, 'Trade'), [
+                                                                  {"name": "CDC_FLAG", "type": "STRING",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "CDC_DSN", "type": "INTEGER",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_ID", "type": "INTEGER",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_DTS", "type": "DATETIME",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_ST_ID", "type": "STRING",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_TT_ID", "type": "STRING",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_IS_CASH", "type": "BOOLEAN",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_S_SYMB", "type": "STRING",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_QTY", "type": "INTEGER",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_BID_PRICE", "type": "NUMERIC",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_CA_ID", "type": "INTEGER",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_EXEC_NAME", "type": "STRING",
+                                                                   "mode": "REQUIRED"},
+                                                                  {"name": "T_TRADE_PRICE", "type": "NUMERIC",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_CHRG", "type": "NUMERIC",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_COMM", "type": "NUMERIC",
+                                                                   "mode": "NULLABLE"},
+                                                                  {"name": "T_TAX", "type": "NUMERIC",
+                                                                   "mode": "NULLABLE"}],
+                                                              'staging.trade')
+
+    merge_master_dim_trade_with_staging_trade = execute_sql(
+        task_id="merge_master_dim_trade_with_staging_trade",
+        sql_file_path='queries/incremental/merge_staging_trade_with_master_dim_trade.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -161,3 +201,8 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
      load_account_file_to_staging] >> merge_master_dim_account_with_staging_account
     merge_master_dim_customer_with_staging_dim_customer >> add_history_tracking_record_for_customer_in_account
     add_history_tracking_record_for_customer_in_account >> merge_master_dim_account_with_staging_account
+
+    # Trade Related tasks
+    [load_batch_date_from_file, update_batch_id,
+     load_trade_file_to_staging] >> merge_master_dim_trade_with_staging_trade
+    merge_master_dim_account_with_staging_account >> merge_master_dim_trade_with_staging_trade
