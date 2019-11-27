@@ -14,21 +14,7 @@ default_args = {
 }
 
 with DAG('incremental_load', schedule_interval=None, default_args=default_args) as dag:
-    load_cash_transaction_file_to_staging = construct_gcs_to_bq_operator('load_cash_transaction_to_staging',
-                                                                         get_file_path(True, 'CashTransaction'), [
-                                                                             {"name": "CDC_FLAG", "type": "STRING",
-                                                                              "mode": "REQUIRED"},
-                                                                             {"name": "CDC_DSN", "type": "INTEGER",
-                                                                              "mode": "REQUIRED"},
-                                                                             {"name": "CT_CA_ID", "type": "INTEGER",
-                                                                              "mode": "REQUIRED"},
-                                                                             {"name": "CT_DTS", "type": "DATETIME",
-                                                                              "mode": "REQUIRED"},
-                                                                             {"name": "CT_AMT", "type": "FLOAT",
-                                                                              "mode": "REQUIRED"},
-                                                                             {"name": "CT_NAME", "type": "STRING",
-                                                                              "mode": "REQUIRED"}],
-                                                                         'staging.cash_transaction')
+
 
     load_daily_market_file_to_staging = construct_gcs_to_bq_operator('load_daily_market_to_staging',
                                                                      get_file_path(True, 'DailyMarket'), [

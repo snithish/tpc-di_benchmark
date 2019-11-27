@@ -181,6 +181,27 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_dim_trade_with_staging_trade",
         sql_file_path='queries/incremental/merge_staging_trade_with_master_dim_trade.sql')
 
+    # Facts
+    load_cash_transaction_file_to_staging = construct_gcs_to_bq_operator('load_cash_transaction_to_staging',
+                                                                         get_file_path(True, 'CashTransaction'), [
+                                                                             {"name": "CDC_FLAG", "type": "STRING",
+                                                                              "mode": "REQUIRED"},
+                                                                             {"name": "CDC_DSN", "type": "INTEGER",
+                                                                              "mode": "REQUIRED"},
+                                                                             {"name": "CT_CA_ID", "type": "INTEGER",
+                                                                              "mode": "REQUIRED"},
+                                                                             {"name": "CT_DTS", "type": "DATETIME",
+                                                                              "mode": "REQUIRED"},
+                                                                             {"name": "CT_AMT", "type": "FLOAT",
+                                                                              "mode": "REQUIRED"},
+                                                                             {"name": "CT_NAME", "type": "STRING",
+                                                                              "mode": "REQUIRED"}],
+                                                                         'staging.cash_transaction')
+
+    merge_master_fact_cash_balances_with_staging_cash_transactions = execute_sql(
+        task_id="merge_master_fact_cash_balances_with_staging_cash_transactions",
+        sql_file_path='queries/incremental/merge_staging_cash_transaction_with_master_fact_cash_balances.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -206,3 +227,8 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
     [load_batch_date_from_file, update_batch_id,
      load_trade_file_to_staging] >> merge_master_dim_trade_with_staging_trade
     merge_master_dim_account_with_staging_account >> merge_master_dim_trade_with_staging_trade
+
+    # Fact Cash Balances Related tasks
+    [load_batch_date_from_file, update_batch_id,
+     load_cash_transaction_file_to_staging] >> merge_master_fact_cash_balances_with_staging_cash_transactions
+    merge_master_dim_account_with_staging_account >> merge_master_fact_cash_balances_with_staging_cash_transactions
