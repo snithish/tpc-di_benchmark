@@ -202,6 +202,26 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_fact_cash_balances_with_staging_cash_transactions",
         sql_file_path='queries/incremental/merge_staging_cash_transaction_with_master_fact_cash_balances.sql')
 
+    load_holding_history_file_to_staging = construct_gcs_to_bq_operator('load_holding_history_to_staging',
+                                                                        get_file_path(True, 'HoldingHistory'), [
+                                                                            {"name": "CDC_FLAG", "type": "STRING",
+                                                                             "mode": "REQUIRED"},
+                                                                            {"name": "CDC_DSN", "type": "INTEGER",
+                                                                             "mode": "REQUIRED"},
+                                                                            {"name": "HH_H_T_ID", "type": "INTEGER",
+                                                                             "mode": "REQUIRED"},
+                                                                            {"name": "HH_T_ID", "type": "INTEGER",
+                                                                             "mode": "REQUIRED"},
+                                                                            {"name": "HH_BEFORE_QTY", "type": "INTEGER",
+                                                                             "mode": "REQUIRED"},
+                                                                            {"name": "HH_AFTER_QTY", "type": "INTEGER",
+                                                                             "mode": "REQUIRED"}],
+                                                                        'staging.holding_history')
+
+    merge_master_fact_holdings_with_staging_holding_history = execute_sql(
+        task_id="merge_master_fact_holdings_with_staging_holding_history",
+        sql_file_path='queries/incremental/merge_staging_holding_history_with_master_fact_holdings.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -232,3 +252,8 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
     [load_batch_date_from_file, update_batch_id,
      load_cash_transaction_file_to_staging] >> merge_master_fact_cash_balances_with_staging_cash_transactions
     merge_master_dim_account_with_staging_account >> merge_master_fact_cash_balances_with_staging_cash_transactions
+
+    # Fact Holding Related tasks
+    [load_batch_date_from_file, update_batch_id,
+     load_holding_history_file_to_staging] >> merge_master_fact_holdings_with_staging_holding_history
+    merge_master_dim_trade_with_staging_trade >> merge_master_fact_holdings_with_staging_holding_history

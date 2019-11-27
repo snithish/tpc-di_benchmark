@@ -36,23 +36,6 @@ with DAG('incremental_load', schedule_interval=None, default_args=default_args) 
                                                                           "mode": "REQUIRED"}],
                                                                      'staging.daily_market')
 
-    load_holding_history_file_to_staging = construct_gcs_to_bq_operator('load_holding_history_to_staging',
-                                                                        get_file_path(True, 'HoldingHistory'), [
-                                                                            {"name": "CDC_FLAG", "type": "STRING",
-                                                                             "mode": "REQUIRED"},
-                                                                            {"name": "CDC_DSN", "type": "INTEGER",
-                                                                             "mode": "REQUIRED"},
-                                                                            {"name": "HH_H_T_ID", "type": "INTEGER",
-                                                                             "mode": "REQUIRED"},
-                                                                            {"name": "HH_T_ID", "type": "INTEGER",
-                                                                             "mode": "REQUIRED"},
-                                                                            {"name": "HH_BEFORE_QTY", "type": "INTEGER",
-                                                                             "mode": "REQUIRED"},
-                                                                            {"name": "HH_AFTER_QTY", "type": "INTEGER",
-                                                                             "mode": "REQUIRED"}],
-                                                                        'staging.holding_history')
-
-
 
     load_watch_history_file_to_staging = construct_gcs_to_bq_operator('load_watch_history_to_staging',
                                                                       get_file_path(True, 'WatchHistory'), [
