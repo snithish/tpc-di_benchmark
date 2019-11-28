@@ -3,7 +3,7 @@ from datetime import datetime
 from airflow import DAG
 
 from constants import CSV_EXTENSION
-from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite
+from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, reset_table
 
 AIRFLOW = 'airflow'
 
@@ -114,5 +114,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
                                                                  {"name": "BatchDate", "type": "DATE",
                                                                   "mode": "REQUIRED"}
                                                              ], 'staging.batch_date')
+
+    reset_batch_number = reset_table(table_name='batch_number')
 
     [load_date_file_to_master, load_hr_file_to_staging] >> transform_hr_to_broker

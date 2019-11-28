@@ -10,6 +10,7 @@ WITH daily_market_with_date AS (
          SELECT l.DM_S_SYMB,
                 l.DM_DATE,
                 l.SK_DateID,
+                l.DM_CLOSE,
                 l.DM_HIGH,
                 l.DM_LOW,
                 l.DM_VOL,
@@ -28,6 +29,7 @@ WITH daily_market_with_date AS (
          SELECT DM_S_SYMB,
                 DM_DATE,
                 SK_DateID,
+                DM_CLOSE,
                 DM_HIGH,
                 DM_LOW,
                 DM_VOL,
@@ -41,7 +43,7 @@ WITH daily_market_with_date AS (
      max_dm AS (
          SELECT DM_S_SYMB,
                 DM_DATE,
-                o_high AS FiftyTwoWeekHigh,
+                o_high      AS FiftyTwoWeekHigh,
                 o_SK_DateID AS SK_FiftyTwoWeekHighDate
          FROM (
                   SELECT *,
@@ -53,6 +55,7 @@ SELECT mn.DM_S_SYMB,
        mn.DM_HIGH,
        mn.DM_LOW,
        mn.DM_VOL,
+       mn.DM_CLOSE,
        FiftyTwoWeekLow,
        SK_FiftyTwoWeekLowDate,
        FiftyTwoWeekHigh,
