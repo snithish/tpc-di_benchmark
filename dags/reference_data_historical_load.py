@@ -16,7 +16,7 @@ default_args = {
     'retries': 0
 }
 
-with DAG('historical_load', schedule_interval=None, default_args=default_args) as dag:
+with DAG('load_reference_data', schedule_interval=None, default_args=default_args) as dag:
     load_date_file_to_master = construct_gcs_to_bq_operator('load_date_to_master', get_file_path(False, 'Date'), [
         {"name": "SK_DateID", "type": "INT64", "mode": "REQUIRED"},
         {"name": "DateValue", "type": "DATE", "mode": "REQUIRED"},
