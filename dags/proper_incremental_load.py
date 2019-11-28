@@ -222,6 +222,26 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
         task_id="merge_master_fact_holdings_with_staging_holding_history",
         sql_file_path='queries/incremental/merge_staging_holding_history_with_master_fact_holdings.sql')
 
+    load_watch_history_file_to_staging = construct_gcs_to_bq_operator('load_watch_history_to_staging',
+                                                                      get_file_path(True, 'WatchHistory'), [
+                                                                          {"name": "CDC_FLAG", "type": "STRING",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "CDC_DSN", "type": "INTEGER",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_C_ID", "type": "INTEGER",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_S_SYMB", "type": "STRING",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_DTS", "type": "DATETIME",
+                                                                           "mode": "REQUIRED"},
+                                                                          {"name": "W_ACTION", "type": "STRING",
+                                                                           "mode": "NULLABLE"}],
+                                                                      'staging.watch_history')
+
+    merge_master_fact_watches_with_staging_watch_history = execute_sql(
+        task_id="merge_master_fact_watches_with_staging_watch_history",
+        sql_file_path='queries/incremental/merge_staging_watch_history_with_master_fact_watches.sql')
+
     # All Customer related tasks
     # Prospect has to be populated before staging_dim_customer computation for MarketingNameplate
     merge_master_prospect_with_staging_prospect >> load_staging_dim_customer_from_staging_customer
@@ -257,3 +277,8 @@ with DAG('proper_incremental_load', schedule_interval=None, default_args=default
     [load_batch_date_from_file, update_batch_id,
      load_holding_history_file_to_staging] >> merge_master_fact_holdings_with_staging_holding_history
     merge_master_dim_trade_with_staging_trade >> merge_master_fact_holdings_with_staging_holding_history
+
+    # Fact Watches Related tasks
+    [load_batch_date_from_file, update_batch_id,
+     load_watch_history_file_to_staging] >> merge_master_fact_watches_with_staging_watch_history
+    merge_master_dim_customer_with_staging_dim_customer >> merge_master_fact_watches_with_staging_watch_history
