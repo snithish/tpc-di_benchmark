@@ -15,6 +15,7 @@ default_args = {
     'retries': 0
 }
 
+# Run after loading customer and account
 with DAG('load_dim_trade_historical', schedule_interval=None, default_args=default_args) as dag:
     load_trade_to_staging = construct_gcs_to_bq_operator('load_trade_to_staging',
                                                          get_file_path(False, 'Trade'), [

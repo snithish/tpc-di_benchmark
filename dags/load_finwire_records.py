@@ -17,6 +17,8 @@ default_args = {
     'retries': 0
 }
 
+# Can run independently
+
 with DAG('load_cmp_records', schedule_interval=None, default_args=default_args) as dag:
     load_finwire_staging = GoogleCloudStorageToBigQueryOperator(
         task_id='load_finwire_files_to_staging',

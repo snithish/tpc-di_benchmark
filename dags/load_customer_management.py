@@ -18,7 +18,7 @@ default_args = {
     'email_on_retry': False,
     'retries': 0
 }
-
+# Can run independently
 with DAG('load_customer_account', schedule_interval=None, default_args=default_args) as dag:
     load_customer_management_staging = GoogleCloudStorageToBigQueryOperator(
         task_id='load_customer_management_file_to_staging',
