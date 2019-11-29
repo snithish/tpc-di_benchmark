@@ -414,7 +414,11 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         sql_file_path='queries/load_fact_market_history_from_historical.sql',
         destination_table='master.fact_market_history')
 
-    dimension_loading_complete >> load_cash_transactions_to_staging >> recreate_fact_cash_balances >> load_fact_cash_balances_from_staging_history
-    dimension_loading_complete >> load_holding_history_historical_to_staging >> recreate_fact_holdings >> load_fact_holding_from_staging_history
-    dimension_loading_complete >> load_watch_history_historical_to_staging >> recreate_fact_watches >> load_fact_watches_from_staging_watch_history
-    dimension_loading_complete >> load_daily_market_to_staging >> create_intermediary_table_daily_market >> recreate_fact_market_history >> load_fact_market_history_from_staging_market_history_transformed
+    [dimension_loading_complete,
+     load_cash_transactions_to_staging]  >> recreate_fact_cash_balances >> load_fact_cash_balances_from_staging_history
+    [dimension_loading_complete,
+     load_holding_history_historical_to_staging] >> recreate_fact_holdings >> load_fact_holding_from_staging_history
+    [dimension_loading_complete,
+     load_watch_history_historical_to_staging] >> recreate_fact_watches >> load_fact_watches_from_staging_watch_history
+    [dimension_loading_complete,
+     load_daily_market_to_staging] >> create_intermediary_table_daily_market >> recreate_fact_market_history >> load_fact_market_history_from_staging_market_history_transformed
