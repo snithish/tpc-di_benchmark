@@ -2,10 +2,13 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
 
 from common_tasks import load_prospect_file_to_staging
 from constants import CSV_EXTENSION, GCS_BUCKET, BIG_QUERY_CONN_ID, GOOGLE_CLOUD_DEFAULT
+from transformations import convert_customer_mgmt_xml_to_json
 from utils import construct_gcs_to_bq_operator, get_file_path, insert_overwrite, reset_table, insert_if_empty, \
     execute_sql
 
@@ -131,6 +134,21 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
 
     # Reference data loading done
 
+    # Convert XML to JSON
+
+    download_customer_management = BashOperator(task_id='download_customer_mangement_xml_to_worker',
+                                                bash_command='rm -rf /home/airflow/gcs/data/CustomerMgmt.xml && gsutil cp gs://tpc-di_data/historical/CustomerMgmt.xml /home/airflow/gcs/data/')
+
+    transform_file_customer_management = PythonOperator(
+        task_id='convert_xml_to_json',
+        python_callable=convert_customer_mgmt_xml_to_json.main
+    )
+
+    upload_file_customer_management = BashOperator(task_id='upload_json_to_data_store',
+                                                   bash_command='gsutil -m cp -R /home/airflow/gcs/data/CustomerMgmt.json gs://tpc-di_data/historical/')
+
+    download_customer_management >> transform_file_customer_management >> upload_file_customer_management
+
     # Load FINWIRE to master dimensions
     load_finwire_staging = GoogleCloudStorageToBigQueryOperator(
         task_id='load_finwire_files_to_staging',
@@ -248,6 +266,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
 
     customer_account_data_load_complete = DummyOperator(task_id='customer_account_data_load_complete')
 
+    upload_file_customer_management >> load_customer_management_staging
     reference_data_load_complete >> [load_customer_management_staging, load_prospect_file_to_staging]
 
     load_customer_management_staging >> [load_customer_from_customer_management,
@@ -415,7 +434,7 @@ with DAG('historical_load', schedule_interval=None, default_args=default_args) a
         destination_table='master.fact_market_history')
 
     [dimension_loading_complete,
-     load_cash_transactions_to_staging]  >> recreate_fact_cash_balances >> load_fact_cash_balances_from_staging_history
+     load_cash_transactions_to_staging] >> recreate_fact_cash_balances >> load_fact_cash_balances_from_staging_history
     [dimension_loading_complete,
      load_holding_history_historical_to_staging] >> recreate_fact_holdings >> load_fact_holding_from_staging_history
     [dimension_loading_complete,

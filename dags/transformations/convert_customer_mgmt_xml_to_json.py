@@ -4,7 +4,8 @@ import xmltodict
 
 
 def main():
-    with open("CustomerMgmt.xml", "r") as file, open("CustomerMgmt.json", "w+") as destination:
+    with open("/home/airflow/gcs/data/CustomerMgmt.xml", "r") as file, open("/home/airflow/gcs/data/CustomerMgmt.json",
+                                                                            "w+") as destination:
         xmltodict.parse(file.read(), item_depth=2, item_callback=append_as_json(destination), attr_prefix="attr_")
 
 
