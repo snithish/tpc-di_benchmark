@@ -1,4 +1,4 @@
-# TPC - DI - Benchmark artefacts for Data Fusion
+# TPC - DI - Benchmark artefacts for Cloud Composer and BigQuery
 
 ## Install Airflow:
 
